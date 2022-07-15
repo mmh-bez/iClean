@@ -1,0 +1,47 @@
+ [
+    {
+      "id": 1,
+      "icon": "assets/images/dash_board.png",
+      "name": "Attendant"
+    },
+    {
+      "id": 2,
+      "icon": "assets/images/dash_board.png",
+      "name": "Supervisor"
+    },
+    {
+      "id": 3,
+      "icon": "assets/images/dash_board.png",
+      "name": "Rooms"
+    },
+   {
+   "id": 4,
+   "icon": "assets/images/dash_board.png",
+   "name": "Minibar"
+ },
+   {
+     "id": 5,
+     "icon": "assets/images/dash_board.png",
+     "name": "Minibar/CO"
+   },
+   {
+     "id": 6,
+     "icon": "assets/images/dash_board.png",
+     "name": "Laundry"
+   },
+   {
+     "id": 7,
+     "icon": "assets/images/dash_board.png",
+     "name": "Lost & Found"
+   },
+   {
+     "id": 8,
+     "icon": "assets/images/dash_board.png",
+     "name": "WO Entry"
+   },
+   {
+     "id": 9,
+     "icon": "assets/images/dash_board.png",
+     "name": "View Logs"
+   }
+  ]
