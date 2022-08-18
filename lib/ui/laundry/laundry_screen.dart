@@ -89,12 +89,8 @@ class _LaundryScreenState extends State<LaundryScreen> {
                           return GestureDetector(
                             onTap: (){
                               voucherController.clear();
-                              model.laundryRoomList[index].roomStatus == RoomStatus.VACANT ||
-                                  model.laundryRoomList[index].roomStatus == RoomStatus.HOLD
-                              ? showAlertDialog(
-                                  context, 'Info', "This room is vacant",  (){
-                                Navigator.pop(context);
-                              }) :
+                              model.laundryRoomList[index].roomStatus == RoomStatus.OCCUPIED
+                              ?
                               showDialog(barrierDismissible: false,
                                 context:context,
                                 builder:(BuildContext context){
@@ -136,16 +132,19 @@ class _LaundryScreenState extends State<LaundryScreen> {
                                     ],
                                   );
                                 },
-                              );
+                              ) :
+                              showAlertDialog(
+                                  context, 'Info', "This room is ${model.laundryRoomList[index].roomStatus}",  (){
+                                Navigator.pop(context);
+                              });
 
                             },
                             child: Container(
                               alignment: Alignment.center,
                               child: Text(model.laundryRoomList[index].room),
                               decoration: BoxDecoration(
-                                  color: model.laundryRoomList[index].roomStatus == RoomStatus.VACANT ||
-                                      model.laundryRoomList[index].roomStatus == RoomStatus.HOLD
-                                  ? Colors.grey : Colors.redAccent,
+                                  color: model.laundryRoomList[index].roomStatus == RoomStatus.OCCUPIED
+                                  ? Colors.redAccent :  Colors.grey ,
                                   borderRadius: BorderRadius.circular(15)
                               ),
 

@@ -46,7 +46,7 @@ class _AddSelectedItemScreenState extends State<AddSelectedItemScreen> {
                         itemBuilder: (context , index){
                           return GestureDetector(
                             onTap: (){
-                              showEditDialog(model.tempItemSelectedList[index]);
+                              showEditDeleteDialog(model.tempItemSelectedList[index]);
                             },
                             child: Container(
                               child: Row(
@@ -81,7 +81,7 @@ class _AddSelectedItemScreenState extends State<AddSelectedItemScreen> {
                             primary: Colors.blue,
                             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),),
                           onPressed: (){
-                            showAlertDialog(context, 'Delete', 'Are you sure to delete selected laundry items.', (){
+                            showAlertDialogTwo(context, 'Delete', 'Are you sure to delete selected items.', (){
                               Provider.of<AppProvider>(context , listen: false).clearSelectedItem();
                               Navigator.pop(context);
                             });
@@ -99,7 +99,8 @@ class _AddSelectedItemScreenState extends State<AddSelectedItemScreen> {
     );
   }
 
-  void showEditDialog(ItemSelected laundryItem) {
+
+  void showEditDeleteDialog(ItemSelected laundryItem) {
     Provider.of<AppProvider>(context , listen: false).addSelectedItemQty(laundryItem.qty);
     showDialog(barrierDismissible: true,
       context:context,
@@ -113,7 +114,7 @@ class _AddSelectedItemScreenState extends State<AddSelectedItemScreen> {
                 icon: Icon(Icons.indeterminate_check_box_outlined),
                 onPressed: (){
                   Provider.of<AppProvider>(context , listen: false).decreaseSelectedItem();
-                  },
+                },
               ) ,
               Text('${context.watch<AppProvider>().selectedQty}'),
               IconButton(
@@ -130,7 +131,13 @@ class _AddSelectedItemScreenState extends State<AddSelectedItemScreen> {
               onPressed: (){
                 Provider.of<AppProvider>(context , listen: false).updateSelctedItem(laundryItem);
                 Navigator.pop(context);
-              }, child: Text('OK') ,
+              }, child: Text('Edit') ,
+            ),
+            ElevatedButton(
+              onPressed: (){
+                Provider.of<AppProvider>(context , listen: false).deleteSelectedItem(laundryItem);
+                Navigator.pop(context);
+              }, child: Text('Delete') ,
             ),
           ],
         );

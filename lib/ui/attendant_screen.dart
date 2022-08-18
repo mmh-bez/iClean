@@ -255,7 +255,13 @@ class _AttendantScreenState extends State<AttendantScreen> {
                   },
                   child: Container(
                     width: 80,
-                    color: roomSelectedIndex == index ? Colors.blue :Colors.orange,
+                    color: roomSelectedIndex == index   ? Colors.black12
+                        : model.roomList[index].roomStatus == 'Vacant' ? Color(0xFF5cb85c)
+                        :model.roomList[index].roomStatus == 'Out Of Order' ? Color(0xFF5bc0de)
+                        :model.roomList[index].roomStatus == 'Occupied' ? Color(0xFFFFB3B3)
+                        :model.roomList[index].roomStatus == 'Due Out' ? Color(0xFFc9302c)
+                        : model.roomList[index].roomStatus == 'Hold' ? Color(0xFF31b0d5)
+                        : Colors.grey,
                     child: Center(child: Text(model.roomList[index].roomStatus , style: TextStyle(fontWeight: FontWeight.bold),)),
                   ),
                 );
@@ -383,7 +389,8 @@ class _AttendantScreenState extends State<AttendantScreen> {
                                            onToggle: (value){
                                              showAlertDialogTwo(context, 'Confirm', 'Confirm update "Do Not Distrub status for Room#${model.attendantList[index].unit}', (){
                                                Navigator.pop(context);
-                                               Provider.of<AppProvider>(context , listen: false).clickDnd(context , model.attendantList[index].getRoomDndButton == 'enable'? 'disable': 'enable' , model.attendantList[index].unit);
+                                               Provider.of<AppProvider>(context , listen: false).clickDnd(context , model.attendantList[index].getRoomDndButton.toLowerCase()
+                                                   , model.attendantList[index].unit ,'attend');
                                              });
                                             },
                                          ),
@@ -421,7 +428,7 @@ class _AttendantScreenState extends State<AttendantScreen> {
         builder: (context){
       return Consumer<AppProvider>(
         builder: (context , model , _){
-          return ListView.builder(
+          return model.state == ViewState.Busy ? Center(child: CircularProgressIndicator()):ListView.builder(
               itemCount: model.historyLogItemList.length,
               itemBuilder: (context , index){
                 return Padding(
@@ -448,11 +455,20 @@ class _AttendantScreenState extends State<AttendantScreen> {
             children: [
               ElevatedButton.icon(onPressed: (){
                 clickPause(model , index);
-              },  label: const Text('Pause'),
+              },
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.blue
+                ),
+                label: const Text('Pause'),
                 icon: const Icon(Icons.pause),),
+              SizedBox(
+                width: 4,
+              ),
               ElevatedButton.icon(onPressed: (){
                 clickEnd(model , index);
-              },  label: const Text('END'),
+              },  style: ElevatedButton.styleFrom(
+                  primary: Colors.redAccent
+              ), label: const Text('END'),
                 icon: const Icon(Icons.stop),),
             ],
           ),
@@ -460,6 +476,9 @@ class _AttendantScreenState extends State<AttendantScreen> {
           ElevatedButton.icon(onPressed: (){
             clickCheckList(model , index);
           },  label: const Text('Attendant Checklist'),
+            style: ElevatedButton.styleFrom(
+                primary: Colors.green
+            ),
             icon: const Icon(Icons.list),),
           ElevatedButton.icon(onPressed: (){
             clickHistory(model , index);
@@ -479,7 +498,7 @@ class _AttendantScreenState extends State<AttendantScreen> {
             child: ElevatedButton.icon(onPressed: (){
               showAlertDialogTwo(context,'Are you going to start houskeeping in Room'
                   '${model.attendantList[index].unit}', model.attendantList[index].hmmNotes, (){
-                Provider.of<AppProvider>(context ,listen: false).clickStart(context , model.attendantList[index].unit);
+                Provider.of<AppProvider>(context ,listen: false).clickStart(context , model.attendantList[index].unit , model.attendantList[index].roomKey);
               Navigator.pop(context);
               });
 
@@ -543,7 +562,7 @@ class _AttendantScreenState extends State<AttendantScreen> {
                 onPressed: (){
                   if (_formKey.currentState.validate()) {
 
-                    model.clickPause(context , model.attendantList[index].unit);
+                    model.clickPause(context , model.attendantList[index].unit , pauseController.text , model.attendantList[index].roomKey);
                   }
                 }, child: Text('OK')),
           ],
@@ -576,8 +595,7 @@ class _AttendantScreenState extends State<AttendantScreen> {
                 }, child: Text('CANCEL')),
             TextButton(
                 onPressed: (){
-                    Navigator.pop(context);
-                    model.clickEnd(context , model.attendantList[index].unit);
+                    model.clickEnd(context , model.attendantList[index].unit ,model.attendantList[index].roomKey);
 
                 }, child: Text('OK')),
           ],
@@ -596,80 +614,106 @@ class _AttendantScreenState extends State<AttendantScreen> {
         context: context,
         builder: (context){
           return FractionallySizedBox(
-            heightFactor: 1,
-            child: Container(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Container(
-                    height: 550,
-                    child: ListView.builder(
-                        itemCount: model.checkItemList.first.attendantCheckList.length,
-                        itemBuilder: (context , index){
-                          return Padding(
-                            padding: EdgeInsets.only(left: 4 , right: 4 ,top: 2),
-                            child: Container(
-                              height: 50,
-                              child: Card(
-                                elevation: 2,
-                                child:
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Container(
-                                        width: 400,
-                                        child: Padding(
-                                            padding: EdgeInsets.all(6),
-                                            child: Text(model.checkItemList.first.attendantCheckList[index].combined)),
-                                      ),
-                              Container(
-                                  child: Padding(
-                              padding: EdgeInsets.all(6),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  IconButton(
-                                      onPressed: (){
+            child: Consumer<AppProvider>(
+              builder: (context , data , _){
+                return  Padding(
+                  padding: EdgeInsets.all(4),
+                  child: Container(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Expanded(
+                          child: Container(
+                          
+                            child: model.state == ViewState.Busy ? Center(child: CircularProgressIndicator()) : ListView.builder(
+                                itemCount: data.checkItemList.first.attendantCheckList.length,
+                                itemBuilder: (context , index){
+                                  return Padding(
+                                      padding: EdgeInsets.only(left: 4 , right: 4 ,top: 1),
+                                      child: Container(
+                                        height: 50,
+                                        child: Card(
+                                          elevation: 2,
+                                          child:
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            mainAxisSize: MainAxisSize.max,
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            children: [
+                                              Expanded(
+                                                child: Container(
+                                                  child: Padding(
+                                                      padding: EdgeInsets.all(6),
+                                                      child: Text(data.checkItemList.first.attendantCheckList[index].combined)),
+                                                ),
+                                              ),
+                                              Expanded(
+                                                child: Container(
+                                                  child: Padding(
+                                                      padding: EdgeInsets.all(6),
+                                                      child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.end,
+                                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                                        children: [
+                                                          IconButton(
+                                                              onPressed: (){
+                                                                data.decreaseCheckList(index);
 
-                                      }, icon: Icon(Icons.indeterminate_check_box_outlined)),
+                                                              }, icon: Icon(Icons.indeterminate_check_box_outlined)),
+                                                          Center(child: Text(data.checkItemList.first.attendantCheckList[index].quantity.toString() , style: TextStyle(fontSize: 16),)),
+                                                          IconButton(
+                                                              onPressed: (){
+                                                                data.increaseCheckList(index);
+                                                                }, icon: Icon(Icons.add_box_outlined)),
+                                                        ],
+                                                      )
+                                                  ),
+                                                ),
+                                              ),
 
+                                            ],
 
-                                  Center(child: Text(model.checkItemList.first.attendantCheckList[index].quantity.toString())),
-                                  IconButton(
-                                      onPressed: (){
-                                        if(model.checkItemList.first.attendantCheckList[index].quantity > 0){
-                                          Provider.of<AppProvider>(context , listen: false).decreaseItem(index);
-                                        }
-
-                                      }, icon: Icon(Icons.add_box_outlined)),
-                                ],
-                              )
+                                          ),
+                                        ),
+                                      )
+                                  );
+                                }),
                           ),
-                                    ),
-
-],
-
-                              ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: 100,
+                              child: ElevatedButton(onPressed: (){
+                                data.updateRoomCheckList(context);
+                              }
+                                  ,
+                                  style:ElevatedButton.styleFrom(primary: Colors.blue)
+                                  ,child: Text('OK')),
                             ),
-                            )
-                          );
-                        }),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ElevatedButton(onPressed: (){}
-                          , child: Text('OK')),
-                      ElevatedButton(onPressed: (){}
-                          , child: Text('CANCEL')),
-                    ],
-                  )
+                            SizedBox(
+                              width: 6,
+                            ),
+                            SizedBox(
+                              width: 100,
+                              child: ElevatedButton(onPressed: (){
+                                Navigator.pop(context);
+                              }
+                                  ,  style:ElevatedButton.styleFrom(primary: Colors.grey) ,
+                                  child: Text('CANCEL')),
+                            ),
+                          ],
+                        )
 
-                ],
-              ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+
             ),
           );
         });

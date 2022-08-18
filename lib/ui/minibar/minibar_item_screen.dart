@@ -7,7 +7,7 @@ import 'package:i_clean/providers/view_state.dart';
 import 'package:i_clean/utils/const.dart';
 import 'package:provider/provider.dart';
 
-import '../laundry/add_laundry_item_screen.dart';
+import '../add_selected_item_screen.dart';
 
 class MinibarItemScreen extends StatefulWidget{
   static const routeName = '/minibaritem';
@@ -31,6 +31,7 @@ class _MinibarItemScreenState extends State<MinibarItemScreen> {
   void initState() {
     // TODO: implement initState
     Provider.of<AppProvider>(context , listen: false).getMinibarItem(context , widget.roomNo);
+    Provider.of<AppProvider>(context , listen: false).clearSelectedItem();
     super.initState();
   }
   @override
@@ -43,6 +44,7 @@ class _MinibarItemScreenState extends State<MinibarItemScreen> {
                 elevation: 4,
                 child: Icon(Icons.add_box),
                 onPressed: (){
+
                   _showModelBottomSheet(model.minibarItemList.first , context);
                 },
               ),
@@ -50,7 +52,9 @@ class _MinibarItemScreenState extends State<MinibarItemScreen> {
                 centerTitle: true,
                 title: Text('Minibar Item'),
               ),
-              body: model.state == ViewState.Busy ? Center(child: CircularProgressIndicator()): Container(
+              body: model.state == ViewState.Busy ? Center(child: CircularProgressIndicator()):
+              model.state == ViewState.Error ? Center(child: Text('No Data')) :
+              Container(
                 width: double.maxFinite,
                 height: double.maxFinite,
                 child: Column(
@@ -339,8 +343,7 @@ class _MinibarItemScreenState extends State<MinibarItemScreen> {
                 icon: Icon(Icons.indeterminate_check_box_outlined),
                 onPressed: (){
                   Provider.of<AppProvider>(context , listen: false).decrease();
-
-                },
+                  },
               ) ,
               Text('${context.watch<AppProvider>().qty}'),
               IconButton(
@@ -356,7 +359,13 @@ class _MinibarItemScreenState extends State<MinibarItemScreen> {
             ElevatedButton(
 
               onPressed: (){
-                Provider.of<AppProvider>(context , listen: false).addMinibarItem( minibarItem, index);
+                Navigator.pop(context);
+              }, child: Text('Cancel') ,
+            ),
+            ElevatedButton(
+
+              onPressed: (){
+                Provider.of<AppProvider>(context , listen: false).addSelectedItem( minibarItem, index);
                 Navigator.pop(context);
               }, child: Text('OK') ,
             ),

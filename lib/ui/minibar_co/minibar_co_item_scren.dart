@@ -7,7 +7,7 @@ import 'package:i_clean/providers/view_state.dart';
 import 'package:i_clean/utils/const.dart';
 import 'package:provider/provider.dart';
 
-import '../laundry/add_laundry_item_screen.dart';
+import '../add_selected_item_screen.dart';
 
 class MinibarCoItemScreen extends StatefulWidget{
   static const routeName = '/minibarcoitem';
@@ -47,7 +47,10 @@ class _MinibarCoItemScreenState extends State<MinibarCoItemScreen> {
                 centerTitle: true,
                 title: Text('Minibar/CO Item'),
               ),
-              body: model.state == ViewState.Busy ? Center(child: CircularProgressIndicator()): Container(
+     body: model.state == ViewState.Busy ? Center(child: CircularProgressIndicator()):
+          model.state == ViewState.Error ? Center(child: Text('No Data')) :
+
+              Container(
                 width: double.maxFinite,
                 height: double.maxFinite,
                 child: Column(
@@ -353,7 +356,14 @@ class _MinibarCoItemScreenState extends State<MinibarCoItemScreen> {
             ElevatedButton(
 
               onPressed: (){
-                Provider.of<AppProvider>(context , listen: false).addMinibarItem( minibarItem, index);
+                Navigator.pop(context);
+              }, child: Text('Cancel') ,
+            ),
+
+            ElevatedButton(
+
+              onPressed: (){
+                Provider.of<AppProvider>(context , listen: false).addSelectedItem( minibarItem, index);
                 Navigator.pop(context);
               }, child: Text('OK') ,
             ),

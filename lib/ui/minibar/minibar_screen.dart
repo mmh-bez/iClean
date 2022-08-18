@@ -86,23 +86,24 @@ class _MiniBarScreenState extends State<MiniBarScreen> {
                         itemBuilder: (BuildContext ctx, index) {
                           return GestureDetector(
                             onTap: (){
-                              model.miniBarRoomList[index].roomStatus == RoomStatus.VACANT ||
-                                  model.miniBarRoomList[index].roomStatus == RoomStatus.HOLD
-                                  ? showAlertDialog(
-                                  context, 'Info', "This room is vacant.No action is required",  (){
-                                    Navigator.pop(context);
-                              }) :      Navigator.push(
+                              model.miniBarRoomList[index].roomStatus == RoomStatus.OCCUPIED ?
+                              Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => MinibarItemScreen(roomNo:  model.miniBarRoomList[index].room),
                                 ),
-                              );
+                              ) :
+                              showAlertDialog(
+                                  context, 'Info', "This room is vacant.No action is required",  (){
+                                    Navigator.pop(context);
+                              });
                             },
                             child: Container(
                                alignment: Alignment.center,
                               child: Text(model.miniBarRoomList[index].room),
                               decoration: BoxDecoration(
-                                  color: model.miniBarRoomList[index].roomStatus == RoomStatus.VACANT ? Colors.grey : Colors.redAccent,
+                                  color: model.miniBarRoomList[index].roomStatus == RoomStatus.OCCUPIED
+                                  ? Colors.redAccent :Colors.grey  ,
                                   borderRadius: BorderRadius.circular(15)
                               ),
 

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -24,6 +26,9 @@ import 'package:i_clean/models/room/room_popup_response.dart';
 import 'package:i_clean/models/room/room_status_response.dart';
 import 'package:i_clean/models/room_button.dart';
 import 'package:i_clean/models/select_item_model.dart';
+import 'package:i_clean/models/supervisor/super_visor_checklist_response.dart';
+import 'package:i_clean/models/supervisor/super_visor_grid_response.dart';
+import 'package:i_clean/models/supervisor/super_visor_status_response.dart';
 import 'package:i_clean/models/view_logs_response.dart';
 import 'package:i_clean/models/woentry/wo_entry_model.dart';
 import 'package:i_clean/models/task_model.dart';
@@ -89,19 +94,24 @@ class AppProvider extends BaseProvider{
 
   List<RoomGridItems> roomGridList =[];
 
-  var qty = 0;
-  var selectedQty = 0;
+  var qty = 1;
+  var selectedQty = 1;
 
   List<RoomPopUpItemList> roomPopUpItemList = [];
   RoomPopUpItem mRoomPopupItem;
 
   String roomPopupStatus;
   String roomFloor;
+  String guestStatus;
+
+  List<GetHotelFloor> superVisorFloorList =[];
+  List<StaffList> staffList =[];
+  List<GetRoomStatuss> superVisorRoomList = [];
 
   void login(BuildContext context , String pin) async{
     showLoaderDialog(context);
     LoginModel loginModel = await ApiService.login(context , pin);
-    if(loginModel.result != null && loginModel.success == true){
+    if( loginModel.success){
       Navigator.pop(context);
       token = loginModel.result.accessToken;
       staffKey = loginModel.result.staffKey;
@@ -109,10 +119,13 @@ class AppProvider extends BaseProvider{
       isAdmin = loginModel.result.isAdmin;
       Navigator.pushNamedAndRemoveUntil(context, DashBoard.routeName, (Route<dynamic> route) => false);
     }else{
+      Navigator.pop(context);
      showAlertDialog(context, "Wrong", "Invalid user name or password", (){
-       Navigator.pop(context);
+      // Navigator.pop(context);
+
      });
     }
+    notifyListeners();
   }
 
 
@@ -137,7 +150,7 @@ class AppProvider extends BaseProvider{
     guestStatusList.clear();
     setState(ViewState.Busy);
     AttendantDataModel _attendantDataModel = await ApiService.getAttendantData(context);
-    if(_attendantDataModel.success == true){
+    if(_attendantDataModel.success ){
       setState(ViewState.Idle);
       floorList.add(GetHotelFloor(floor: '0' , btnFloor: 'ALL'));
       roomList.add(GetRoomStatuss(roomStatusKey : "",
@@ -149,6 +162,11 @@ class AppProvider extends BaseProvider{
       maidStatusList.addAll(_attendantDataModel.result.items.first.maidStatusListOutPuts);
       guestStatusList.addAll(_attendantDataModel.result.items.first.getGuestStatuss);
 
+    }else{
+      setState(ViewState.Idle);
+      showAlertDialog(context, "Error", "Something Wrong.Please try again", (){
+
+      });
     }
 
     notifyListeners();
@@ -364,6 +382,7 @@ class AppProvider extends BaseProvider{
   }
 
   void getLaundryItem(BuildContext context , String roomNo) async {
+    laundryItemModelList.clear();
     setState(ViewState.Busy);
     LaundryItemResponse _model = await ApiService.getLaundryItem(context , roomNo);
     if(_model.success == true){
@@ -378,7 +397,7 @@ class AppProvider extends BaseProvider{
     var found = false;
     for (var i = 0; i < tempItemSelectedList.length; i++) {
       if (tempItemSelectedList[i].itemKey == mLaundryItem.itemKey) {
-        tempItemSelectedList[i].qty += qty;
+        tempItemSelectedList[i].qty = qty;
         found = true;
         break;
       }
@@ -406,18 +425,19 @@ class AppProvider extends BaseProvider{
   }
 
   void getInitialQty(ItemSelected mLaundryItem){
-    for (var i = 0; i < tempItemSelectedList.length; i++) {
+/*    for (var i = 0; i < tempItemSelectedList.length; i++) {
       if (tempItemSelectedList[i].itemKey == mLaundryItem.itemKey) {
-        qty = tempItemSelectedList[i].qty;
+        qty = tempItemSelectedList[i].qty == 0 ? 1 : tempItemSelectedList[i].qty;
         break;
       }
-      qty = 0;
-    }
+      qty = 1;
+    }*/
+    qty = 1;
     notifyListeners();
   }
 
   void decrease() {
-    if(qty > 0 ) qty--;
+    if(qty > 1 ) qty--;
     notifyListeners();
   }
 
@@ -427,7 +447,7 @@ class AppProvider extends BaseProvider{
   }
 
   void decreaseSelectedItem() {
-    if(selectedQty > 0 ) selectedQty--;
+    if(selectedQty > 1 ) selectedQty--;
     notifyListeners();
   }
 
@@ -442,6 +462,8 @@ class AppProvider extends BaseProvider{
 
   void clearSelectedItem() {
     tempItemSelectedList.clear();
+    qty = 1;
+    selectedQty = 1;
     notifyListeners();
   }
 
@@ -449,10 +471,9 @@ class AppProvider extends BaseProvider{
 
     showLoaderDialog(context);
     SelectedItemModel _item = SelectedItemModel(
-
-      itemSelected: tempItemSelectedList,
+        itemSelected: tempItemSelectedList,
          roomNo: roomNo,
-     voucherNo: voucherNo,
+     voucherNo: voucherNo == '' ? null : voucherNo,
      reservationKey: reservationKey,
      roomKey:roomKey
     );
@@ -484,11 +505,17 @@ class AppProvider extends BaseProvider{
   }
 
   void getMinibarItem(BuildContext context, String roomNo) async{
+    minibarItemList.clear();
     setState(ViewState.Busy);
     MinibarItemResponse _model = await ApiService.getMinibarItem(context , roomNo);
-    if(_model.success == true){
+    if(_model.success){
       setState(ViewState.Idle);
       minibarItemList.addAll(_model.result.items);
+    }else{
+      setState(ViewState.Error);
+      showAlertDialog(context, "Error", "This room is vacant. No action is required.", (){
+
+      });
     }
     notifyListeners();
   }
@@ -499,11 +526,16 @@ class AppProvider extends BaseProvider{
     if(_model.success == true){
       setState(ViewState.Idle);
       minibarCoItemList.addAll(_model.result.items);
+    }else{
+      setState(ViewState.Error);
+      showAlertDialog(context, "Error", "This room is vacant. No action is required.", (){
+
+      });
     }
     notifyListeners();
   }
 
-  void addMinibarItem(MinibarItem minibarItem, int index) {
+  void addSelectedItem(MinibarItem minibarItem, int index) {
     var found = false;
     for (var i = 0; i < tempItemSelectedList.length; i++) {
       if (tempItemSelectedList[i].itemKey == minibarItem.itemKey) {
@@ -524,6 +556,7 @@ class AppProvider extends BaseProvider{
     notifyListeners();
   }
 
+
   void getLostFoundEditData(BuildContext context, String lostFoundKey) async{
     setState(ViewState.Busy);
     LostAndFoundEditResponse _lostFoundedit = await ApiService.getLostAndFoundEditData(context,  lostFoundKey);
@@ -534,11 +567,17 @@ class AppProvider extends BaseProvider{
     notifyListeners();
   }
 
-  void clickDnd(BuildContext context , String getRoomDndButton, String unit) async{
+  void clickDnd(BuildContext context , String getRoomDndButton, String unit , String type) async{
     BaseResponse _baseResponse= await ApiService.setDND(context  ,getRoomDndButton , unit);
     if(_baseResponse.success == true){
-      getAttendantList(context, currentFloorName, currentMaidStatus, currentGuestStatus, currentRoomStatus);
-      showAlertDialog(context, 'Success', "Record has been saved", (){
+      if(type == 'attend'){
+        getAttendantList(context, currentFloorName, currentMaidStatus, currentGuestStatus, currentRoomStatus);
+      }else if(type == 'super'){
+        getSupervisorGrid(context, superVisorSelectedRoom, superFloor,superSelectedStaff);
+      }else if(type == 'room'){
+        getRoomList(context, roomPopupStatus,guestStatus, roomFloor);
+      }
+        showAlertDialog(context, 'Success', "Record has been saved", (){
         Navigator.pop(context);
       });
     }else{
@@ -549,9 +588,9 @@ class AppProvider extends BaseProvider{
     notifyListeners();
   }
 
-  void clickStart(BuildContext context, String unit) async{
+  void clickStart(BuildContext context, String unit , String roomkey) async{
     showLoaderDialog(context);
-    BaseResponse _base = await ApiService.clickStart(context , unit);
+    BaseResponse _base = await ApiService.clickStart(context , unit , roomkey);
     if(_base.success == true){
       getAttendantList(context, currentFloorName, currentMaidStatus, currentGuestStatus, currentRoomStatus);
       Navigator.pop(context);
@@ -569,14 +608,33 @@ class AppProvider extends BaseProvider{
 
   void getHistoryLogOfRoom(BuildContext context, String roomKey) async{
    // historyLogItemList.clear();
+    setState(ViewState.Busy);
     HistoryLogOfRoom _history = await ApiService.getHistoryLogOfRoom(context , roomKey , staffKey);
-    historyLogItemList = _history.result.items;
+    if(_history.success){
+      setState(ViewState.Idle);
+      historyLogItemList = _history.result.items;
+    }else{
+
+    }
+
     notifyListeners();
   }
 
+  String attendantRoomKey ;
   void getCheckList(BuildContext context , String room)async{
+    setState(ViewState.Busy);
     CheckLIstModel _check = await ApiService.getCheckList(context , room);
-    checkItemList = _check.result.items;
+    if(_check.success){
+      setState(ViewState.Idle);
+      checkItemList = _check.result.items;
+      attendantRoomKey = _check.result.items.first.roomKey;
+    }else{
+      setState(ViewState.Idle);
+      showAlertDialog(context, "Error", "Something wrong", (){
+
+      });
+    }
+
     notifyListeners();
   }
 
@@ -585,16 +643,18 @@ class AppProvider extends BaseProvider{
     notifyListeners();
   }
 
-  void clickPause(BuildContext context , String unit) async{
+  void clickPause(BuildContext context , String unit , String note , String roomKey) async{
     showLoaderDialog(context);
-    BaseResponse _base = await ApiService.clickPause(context , unit);
+    BaseResponse _base = await ApiService.clickPause(context , unit , note , roomKey);
     if(_base.success == true){
+      Navigator.pop(context);
       Navigator.pop(context);
       getAttendantList(context, currentFloorName, currentMaidStatus, currentGuestStatus, currentRoomStatus);
       showAlertDialog(context, 'Success', "Record has been saved", (){
         Navigator.pop(context);
       });
     }else{
+      Navigator.pop(context);
       Navigator.pop(context);
       showAlertDialog(context, 'Error', "Please try again", (){
         Navigator.pop(context);
@@ -602,16 +662,19 @@ class AppProvider extends BaseProvider{
     }
   }
 
-  void clickEnd(BuildContext context, String unit) async{
+  void clickEnd(BuildContext context, String unit , String roomKey) async{
     showLoaderDialog(context);
-    BaseResponse _base = await ApiService.clickEnd(context , unit);
+    BaseResponse _base = await ApiService.clickEnd(context , unit , roomKey);
     if(_base.success == true){
+      Navigator.pop(context);
       Navigator.pop(context);
       getAttendantList(context, currentFloorName, currentMaidStatus, currentGuestStatus, currentRoomStatus);
       showAlertDialog(context, 'Success', "Record has been saved", (){
         Navigator.pop(context);
       });
     }else{
+      Navigator.pop(context);
+      Navigator.pop(context);
       showAlertDialog(context, 'Error', "Please try again", (){
         Navigator.pop(context);
       });
@@ -642,12 +705,14 @@ class AppProvider extends BaseProvider{
 
   }
 
-  void getRoomList(BuildContext context, String roomStatus, String floor) async {
+  void getRoomList(BuildContext context, String roomStatus, String mguestStatus ,  String floor) async {
     setState(ViewState.Busy);
     roomGridList.clear();
     roomPopupStatus = roomStatus;
+    guestStatus = mguestStatus;
+
     roomFloor = floor;
-    RoomGridResponse _room = await ApiService.getRoomGrid(context , roomStatus , floor);
+    RoomGridResponse _room = await ApiService.getRoomGrid(context , roomStatus ,guestStatus , floor);
     if(_room.success){
       setState(ViewState.Idle);
       roomGridList.addAll(_room.result.items);
@@ -665,17 +730,18 @@ class AppProvider extends BaseProvider{
   }
 
   void addAssign(BuildContext context, String previousAttendantKey, String maidKey, String name,
-      String roomNo)async {
+      String roomNo , String previousName)async {
     Map<String , dynamic> data = {
       "previousAttendantKey": previousAttendantKey,
       "strAssignedAttendantKey": maidKey,
       "strAssignedAttendantName": name,
-      "roomNo": roomNo
+      "roomNo": roomNo,
+      "previousAttendantName": previousName
     };
 
     BaseResponse _base = await ApiService.addAssign(context, data);
     if(_base.success){
-      getRoomList(context, roomPopupStatus, roomFloor);
+      getRoomList(context, roomPopupStatus, guestStatus,roomFloor);
       showAlertDialog(context, "Success", "Record have been saved", (){
 
       });
@@ -686,16 +752,17 @@ class AppProvider extends BaseProvider{
     }
   }
 
-  void clickUnassign(BuildContext context, String previousAttendantKey, String roomNo) async{
+  void clickUnassign(BuildContext context, String previousAttendantKey, String roomNo , String name) async{
     Map<String , dynamic> data = {
       "previousAttendantKey": previousAttendantKey,
-      "roomNo": roomNo
+      "roomNo": roomNo,
+      "previousAttendantName": name
     };
 
     BaseResponse _base = await ApiService.clickUnassign(context, data);
     if(_base.success){
       Navigator.pop(context);
-      getRoomList(context, roomPopupStatus, roomFloor);
+      getRoomList(context, roomPopupStatus,guestStatus, roomFloor);
       showAlertDialog(context, "Success", "Record have been saved", (){
 
       });
@@ -705,6 +772,178 @@ class AppProvider extends BaseProvider{
       });
     }
 
+  }
+
+  void getSupervisorData(BuildContext context) async{
+    setState(ViewState.Busy);
+    superVisorFloorList.clear();
+    superVisorRoomList.clear();
+
+    SupervisorStatusResponse _res = await ApiService.getSupervisroData(context);
+    if(_res.success == true){
+      setState(ViewState.Idle);
+      superVisorFloorList.add(GetHotelFloor(floor: '0' , btnFloor: 'ALL'));
+      superVisorRoomList.add(GetRoomStatuss(roomStatusKey : "",
+          roomStatus: "ALL"));
+      superVisorFloorList.addAll(_res.result.items.first.getHotelFloors);
+      superVisorRoomList.addAll(_res.result.items.first.getRoomStatuss);
+      staffList = _res.result.items.first.staffList;
+
+    }
+
+    notifyListeners();
+
+  }
+
+  List<SuperVisorItem> supervisorItemList =[];
+  String superVisorSelectedRoom ;
+  String superFloor;
+  String superSelectedStaff;
+  void getSupervisorGrid(BuildContext context, String selectedRoom, String floor , String selectedStaff)async {
+    setState(ViewState.Busy);
+    superVisorSelectedRoom = selectedRoom;
+    superFloor = floor;
+    superSelectedStaff = selectedStaff;
+    SupervisorGridResponse _res = await ApiService.getSupervisorGrid(context, selectedRoom , floor , selectedStaff);
+    if(_res.success){
+      setState(ViewState.Idle);
+      supervisorItemList = _res.result.items;
+    }
+  notifyListeners();
+  }
+
+  List<HistoryLogOfRoomItem> supervisorHistoryList = [];
+  void getHistorySupervisor(BuildContext context, String roomKey) async{
+    setState(ViewState.Busy);
+    HistoryLogOfRoom _res = await ApiService.getSupervisorHistory(context, roomKey);
+    if(_res.success){
+      setState(ViewState.Idle);
+      supervisorHistoryList = _res.result.items;
+    }
+    notifyListeners();
+
+  }
+
+  void confirmClean(BuildContext context, String room, String text , String phy , String roomKey)async {
+    showLoaderDialog(context);
+    BaseResponse _res = await ApiService.confirmClean(context , room, text , phy , roomKey);
+    if(_res.success){
+      Navigator.pop(context);
+      getSupervisorGrid(context, superVisorSelectedRoom, superFloor,superSelectedStaff);
+      showAlertDialog(context, "Success", "Record have been saved", (){
+      });
+    }else{
+      Navigator.pop(context);
+      showAlertDialog(context, "Fail", "Please try again", (){
+
+      });
+    }
+  }
+
+  void confirmDirty(BuildContext context, String room, String text, String phy ,String roomKey) async {
+    showLoaderDialog(context);
+    BaseResponse _res = await ApiService.confirmDirty(context , room, text , phy , roomKey);
+    if(_res.success){
+      Navigator.pop(context);
+      getSupervisorGrid(context, superVisorSelectedRoom, superFloor,superSelectedStaff);
+      showAlertDialog(context, "Success", "Record have been saved", (){
+      });
+    }else{
+      Navigator.pop(context);
+      showAlertDialog(context, "Fail", "Please try again", (){
+
+      });
+    }
+  }
+
+  List<SupCheckList> supCheckItemList = [];
+  String supRoomKey ;
+  void getSupervisorCheckList(BuildContext context, String unit) async{
+    setState(ViewState.Busy);
+    SupervisorCheckListResponse _res = await ApiService.getSupCheckList(context , unit);
+    if(_res.success){
+      setState(ViewState.Idle);
+      supRoomKey = _res.result.items.first.roomKey;
+      supCheckItemList = _res.result.items.first.supCheckList;
+
+    }
+    notifyListeners();
+  }
+
+  void updateCheckbox(bool value , int index) {
+    if(value){
+      supCheckItemList[index].checked = 1;
+    }else{
+      supCheckItemList[index].checked = 0;
+    }
+    notifyListeners();
+  }
+
+  void saveCheckList(BuildContext context) async{
+    showLoaderDialog(context);
+
+    SupCheckItem data = SupCheckItem(
+      supCheckList: supCheckItemList,
+      roomKey: supRoomKey
+    );
+
+    String json = subCheckItemToJson(data);
+    BaseResponse _res = await ApiService.saveCheckList(context , json );
+    if(_res.success){
+      Navigator.pop(context);
+      showAlertDialog(context, "Success", "Record have been saved", (){
+      });
+    }else{
+      Navigator.pop(context);
+      showAlertDialog(context, "Error", "Please try again", (){
+
+      });
+    }
+  }
+
+  void increaseCheckList(int index) {
+    checkItemList.first.attendantCheckList[index].quantity++;
+    notifyListeners();
+  }
+
+  void decreaseCheckList(int index) {
+    if(checkItemList.first.attendantCheckList[index].quantity > 0 ){
+      checkItemList.first.attendantCheckList[index].quantity--;
+    }
+
+    notifyListeners();
+  }
+
+
+  void updateRoomCheckList(BuildContext context) async{
+    CheckListItem data = CheckListItem(
+        attendantCheckList : checkItemList.first.attendantCheckList,
+      roomKey: attendantRoomKey,
+    );
+    String json = checkListItemToJson(data);
+    BaseResponse _res = await ApiService.updateAttendantCheckList(context , json);
+    if(_res.success){
+      Navigator.pop(context);
+      showAlertDialog(context, "Success", "Record have been saved", (){
+      });
+    }else {
+      Navigator.pop(context);
+      showAlertDialog(context, "Error", "Please try again", () {
+
+      });
+    }
+  }
+
+  void deleteSelectedItem(ItemSelected selectedItem) {
+    for (var i = 0; i < tempItemSelectedList.length; i++) {
+      if (tempItemSelectedList[i].itemKey == selectedItem.itemKey) {
+        tempItemSelectedList.removeAt(i) ;
+        break;
+      }
+    }
+    qty = 1;
+    selectedQty = 1;
+    notifyListeners();
   }
 
 }

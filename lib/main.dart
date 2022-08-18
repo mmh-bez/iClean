@@ -4,7 +4,7 @@ import 'package:i_clean/providers/app_provider.dart';
 import 'package:i_clean/ui/attendant_screen.dart';
 import 'package:i_clean/ui/dash_board.dart';
 import 'package:i_clean/ui/history_screen.dart';
-import 'package:i_clean/ui/laundry/add_laundry_item_screen.dart';
+import 'package:i_clean/ui/add_selected_item_screen.dart';
 import 'package:i_clean/ui/laundry/laundry_item_screen.dart';
 import 'package:i_clean/ui/laundry/laundry_screen.dart';
 import 'package:i_clean/ui/login_screen.dart';
@@ -15,9 +15,10 @@ import 'package:i_clean/ui/minibar/minibar_screen.dart';
 import 'package:i_clean/ui/minibar_co/minibar_co_item_scren.dart';
 import 'package:i_clean/ui/minibar_co/minibar_co_screen.dart';
 import 'package:i_clean/ui/room/room_screen.dart';
-import 'package:i_clean/ui/supervisor_screen.dart';
+import 'package:i_clean/ui/supervisor/supervisor_screen.dart';
 import 'package:i_clean/ui/view_logs_screen.dart';
 import 'package:i_clean/ui/wo_entry_screen.dart';
+import 'package:i_clean/utils/const.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -38,6 +39,7 @@ class MyApp extends StatelessWidget {
     ),
       ],
       child: GetMaterialApp(
+        navigatorKey: alice.getNavigatorKey(),
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primaryColor: Colors.orange,
@@ -56,7 +58,7 @@ class MyApp extends StatelessWidget {
           LostAndFoundScreen.routeName: (BuildContext context) => LostAndFoundScreen(),
           MiniBarScreen.routeName:(BuildContext context) => MiniBarScreen(),
           RoomScreen.routeName:(BuildContext context) => RoomScreen(),
-          SuperVisorScreen.routeName:(BuildContext context) => SuperVisorScreen(),
+          SupervisorScreen.routeName:(BuildContext context) => SupervisorScreen(),
           ViewLogsScreen.routeName:(BuildContext context) => ViewLogsScreen(),
           WoEntryScreen.routeName:(BuildContext context) => WoEntryScreen(),
           AddLostFoundScreen.routeName:(BuildContext context) => AddLostFoundScreen(),

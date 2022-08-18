@@ -60,10 +60,11 @@ class _EditLostFoundScreenState extends State<EditLostFoundScreen> {
   @override
   void initState() {
     // TODO: implement initState
-    dateController.text = formatDate(selectedDate);
+    //dateController.text = formatDate(selectedDate);
     formattedDate = convertDate(selectedDate);
-/*    refController.text = widget.item.reference;
     dateController.text = formatDate(widget.item.reportedDate);
+/*    refController.text = widget.item.reference;
+
     itemController.text = widget.item.itemName;
     ownerController.text = widget.item.owner;
     ownerFolioController.text = widget.item.*/
@@ -124,7 +125,7 @@ class _EditLostFoundScreenState extends State<EditLostFoundScreen> {
                             child: Container(
                               child: TextField(
                                 enabled: false,
-                                controller: dateController..text = formatDate(model.lostFoundEditData.reportedDate),
+                                controller: dateController,
                                 decoration: InputDecoration(
                                     suffixIcon: Icon(Icons.date_range_outlined),
                                     enabledBorder: OutlineInputBorder(

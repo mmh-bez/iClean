@@ -10,7 +10,7 @@ import 'package:i_clean/ui/lostandfound/lost_and_found_screen.dart';
 import 'package:i_clean/ui/minibar/minibar_screen.dart';
 import 'package:i_clean/ui/minibar_co/minibar_co_screen.dart';
 import 'package:i_clean/ui/room/room_screen.dart';
-import 'package:i_clean/ui/supervisor_screen.dart';
+import 'package:i_clean/ui/supervisor/supervisor_screen.dart';
 import 'package:i_clean/ui/view_logs_screen.dart';
 import 'package:i_clean/ui/wo_entry_screen.dart';
 import 'package:i_clean/utils/const.dart';
@@ -109,6 +109,80 @@ class _StateDashBoard extends State<DashBoard> {
                                   children: [
                                     Visibility(
                                       visible: isAdmin,
+                                      child: InkWell(
+                                        onTap: (){
+                                          Navigator.pushNamed(context, AttendantScreen.routeName);
+                                        },
+                                        child: Card(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(15.0),
+                                          ),
+                                          elevation: 8,
+                                          child: ClipPath(
+                                            clipper: ShapeBorderClipper(
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(10))),
+                                            child: Container(
+                                                height: 120,
+                                                width: MediaQuery.of(context).size.width /2.4,
+                                                alignment: Alignment.centerLeft,
+                                                child: Column(
+                                                  children: [
+                                                    Container(
+                                                        height: 80,
+                                                        decoration: BoxDecoration(
+                                                          color: Colors.orangeAccent,
+                                                        ),
+                                                        child: Padding(
+                                                          padding: EdgeInsets.only(right: 4),
+                                                          child: Row(
+                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                            children: [
+                                                              Icon(Icons.note_add , size: 80, color: Colors.white,),
+                                                              Container(
+                                                                child: Column(
+                                                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                                    children: [
+                                                                      Text(model.assignedTask.toString() , style: TextStyle(fontWeight: FontWeight.bold ,color: Colors.white, fontSize: 18),),
+                                                                      Text('Assigned \nTasks',  textAlign: TextAlign.end, style: TextStyle(color: Colors.white),),
+ ]
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        )
+                                                    ),
+                                                    Padding(
+                                                      padding: EdgeInsets.only(left: 8 , right: 8),
+                                                      child: Container(
+                                                          height: 40,
+                                                          decoration: BoxDecoration(
+                                                            color: Colors.white54,
+                                                          ),
+                                                          child: Row(
+                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                            children: [
+                                                              Text('View Details' , style: TextStyle(color: Colors.orangeAccent), ),
+                                                              Icon(Icons.forward_outlined ,color: Colors.orangeAccent,),
+                                                            ],
+                                                          )
+
+                                                      ),
+                                                    ),
+
+
+                                                  ],
+                                                )),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+
+                                    InkWell(
+                                      onTap: (){
+                                        Navigator.pushNamed(context, SupervisorScreen.routeName);
+                                      },
                                       child: Card(
                                         shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(15.0),
@@ -127,19 +201,20 @@ class _StateDashBoard extends State<DashBoard> {
                                                   Container(
                                                       height: 80,
                                                       decoration: BoxDecoration(
-                                                        color: Colors.orangeAccent,
+                                                        color: Colors.blueAccent,
                                                       ),
                                                       child: Padding(
-                                                        padding: EdgeInsets.only(right: 4),
+                                                        padding: EdgeInsets.only(left: 8 , right: 8),
                                                         child: Row(
                                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                           children: [
-                                                            Icon(Icons.note_add , size: 80, color: Colors.white,),
+                                                            Icon(Icons.view_list_outlined , size: 80, color: Colors.white,),
                                                             Container(
                                                               child: Column(
                                                                   crossAxisAlignment: CrossAxisAlignment.end,
                                                                   mainAxisAlignment: MainAxisAlignment.center,
                                                                   children: [
+
                                                                     Text(model.inspectRoom.toString() , style: TextStyle(fontWeight: FontWeight.bold ,color: Colors.white, fontSize: 18),),
                                                                     Text('Rooms to \ninspect!',  textAlign: TextAlign.end, style: TextStyle(color: Colors.white),),
                                                                   ]
@@ -159,8 +234,8 @@ class _StateDashBoard extends State<DashBoard> {
                                                         child: Row(
                                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                           children: [
-                                                            Text('View Details' , style: TextStyle(color: Colors.orangeAccent), ),
-                                                            Icon(Icons.forward_outlined ,color: Colors.orangeAccent,),
+                                                            Text('View Details' , style: TextStyle(color: Colors.blue), ),
+                                                            Icon(Icons.forward_outlined ,color: Colors.blue,),
                                                           ],
                                                         )
 
@@ -171,70 +246,6 @@ class _StateDashBoard extends State<DashBoard> {
                                                 ],
                                               )),
                                         ),
-                                      ),
-                                    ),
-
-                                    Card(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(15.0),
-                                      ),
-                                      elevation: 8,
-                                      child: ClipPath(
-                                        clipper: ShapeBorderClipper(
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(10))),
-                                        child: Container(
-                                            height: 120,
-                                            width: MediaQuery.of(context).size.width /2.4,
-                                            alignment: Alignment.centerLeft,
-                                            child: Column(
-                                              children: [
-                                                Container(
-                                                    height: 80,
-                                                    decoration: BoxDecoration(
-                                                      color: Colors.blueAccent,
-                                                    ),
-                                                    child: Padding(
-                                                      padding: EdgeInsets.only(left: 8 , right: 8),
-                                                      child: Row(
-                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                        children: [
-                                                          Icon(Icons.view_list_outlined , size: 80, color: Colors.white,),
-                                                          Container(
-                                                            child: Column(
-                                                                crossAxisAlignment: CrossAxisAlignment.end,
-                                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                                children: [
-                                                                  Text(model.assignedTask.toString() , style: TextStyle(fontWeight: FontWeight.bold ,color: Colors.white, fontSize: 18),),
-                                                                  Text('Assigned \nTasks',  textAlign: TextAlign.end, style: TextStyle(color: Colors.white),),
-                                                                ]
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    )
-                                                ),
-                                                Padding(
-                                                  padding: EdgeInsets.only(left: 8 , right: 8),
-                                                  child: Container(
-                                                      height: 40,
-                                                      decoration: BoxDecoration(
-                                                        color: Colors.white54,
-                                                      ),
-                                                      child: Row(
-                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                        children: [
-                                                          Text('View Details' , style: TextStyle(color: Colors.blue), ),
-                                                          Icon(Icons.forward_outlined ,color: Colors.blue,),
-                                                        ],
-                                                      )
-
-                                                  ),
-                                                ),
-
-
-                                              ],
-                                            )),
                                       ),
                                     )
                                   ],
@@ -270,14 +281,21 @@ class _StateDashBoard extends State<DashBoard> {
                                               Navigator.pushNamed(context, AttendantScreen.routeName);
                                             }else if(model.dashBoardList[index].id == 2){
                                               if(isAdmin){
-                                                Navigator.pushNamed(context, SuperVisorScreen.routeName);
+                                                Navigator.pushNamed(context, SupervisorScreen.routeName);
+                                              }else{
+                                                showSnackBar(context);
+                                              }
+                                            }else if(model.dashBoardList[index].id == 3){
+                                              if(isAdmin){
+                                                Navigator.pushNamed(context, RoomScreen.routeName);
                                               }else{
                                                 showSnackBar(context);
                                               }
 
-                                            }else if(model.dashBoardList[index].id == 3){
+                                            }
+                                            else if(model.dashBoardList[index].id == 10){
                                               if(isAdmin){
-                                                Navigator.pushNamed(context, RoomScreen.routeName);
+                                                Navigator.pushNamed(context, SupervisorScreen.routeName);
                                               }else{
                                                 showSnackBar(context);
                                               }
@@ -324,7 +342,10 @@ class _StateDashBoard extends State<DashBoard> {
                                                     FaIcon(FontAwesomeIcons.tasks),
                                                   ] else if(model.dashBoardList[index].id == 2)...[
                                                     FaIcon(FontAwesomeIcons.pencilSquare),
-                                                  ]else if(model.dashBoardList[index].id == 3)...[
+                                                  ]
+                                                  else if(model.dashBoardList[index].id == 10)...[
+                                                      FaIcon(FontAwesomeIcons.pencilSquare),
+                                                    ]else if(model.dashBoardList[index].id == 3)...[
                                                     FaIcon(FontAwesomeIcons.building),
                                                   ]else if(model.dashBoardList[index].id == 4)...[
                                                     FaIcon(FontAwesomeIcons.wineGlass),

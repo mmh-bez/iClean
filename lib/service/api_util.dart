@@ -32,13 +32,7 @@ class ApiUtil {
     apiWithNoAuth.options.responseType = ResponseType.plain;
     apiWithNoAuth.options.headers['Accept'] = 'application/json';
     apiWithNoAuth.options.validateStatus = ((code){
-      if(code == 401){
-        showAlertDialog(context, "Invalid", "Invalid user name or password", (){
-          Navigator.pop(context);
-          Navigator.pop(context);
-        });
-        return false;
-      }else if(code == 500){
+  if(code == 500){
         showAlertDialog(context, "Error", "Internal Server Error.Please try again later.", (){
           Navigator.pop(context);
         });

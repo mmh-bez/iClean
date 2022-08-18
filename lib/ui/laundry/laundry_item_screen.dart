@@ -5,7 +5,7 @@ import 'package:i_clean/models/laundry/laundry_item_response.dart';
 import 'package:i_clean/models/select_item_model.dart';
 import 'package:i_clean/providers/app_provider.dart';
 import 'package:i_clean/providers/view_state.dart';
-import 'package:i_clean/ui/laundry/add_laundry_item_screen.dart';
+import 'package:i_clean/ui/add_selected_item_screen.dart';
 import 'package:i_clean/utils/const.dart';
 import 'package:provider/provider.dart';
 
@@ -150,7 +150,7 @@ class _LaundryItemScreenState extends State<LaundryItemScreen> {
                                           child: Text(':'),
                                         ),
                                         Container(
-                                          width: 200,
+                                          width: 400,
                                           child: Text(model.laundryItemModelList.first.guestName, style: TextStyle(fontSize: 16),)
                                         ),
                                       ],
@@ -169,7 +169,7 @@ class _LaundryItemScreenState extends State<LaundryItemScreen> {
                                           child: Image.asset('assets/images/in.png'),
                                         ),
                                         Container(
-                                          width: 200,
+                                          width: 400,
                                           child: Text(formatDate(model.laundryItemModelList.first.checkInDate), style: TextStyle(fontSize: 16),),
                                         ),
                                       ],
@@ -188,7 +188,7 @@ class _LaundryItemScreenState extends State<LaundryItemScreen> {
                                           child: Image.asset('assets/images/out.png'),
                                         ),
                                         Container(
-                                          width: 200,
+                                          width: 400,
                                           child: Text(formatDate(model.laundryItemModelList.first.checkOutDate) , style: TextStyle(fontSize: 16),),
                                         ),
                                       ],
@@ -397,6 +397,12 @@ class _LaundryItemScreenState extends State<LaundryItemScreen> {
             ],
           ),
           actions: [
+            ElevatedButton(
+
+              onPressed: (){
+                Navigator.pop(context);
+              }, child: Text('Cancel') ,
+            ),
             ElevatedButton(
 
                 onPressed: (){

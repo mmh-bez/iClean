@@ -1,15 +1,19 @@
+import 'package:alice/alice.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-const baseApi = "https://test.bezcloud.app/api";
+//const baseApi = "https://test.bezcloud.app/api";
+const baseApi = "https://iclean.bezcloud.app/api";
+GlobalKey<NavigatorState> nav = GlobalKey<NavigatorState>();
 String token ;
 String staffKey;
 String name;
 bool isAdmin = false;
+Alice alice = Alice(showNotification: true, navigatorKey: nav);
 
 String formatDate(DateTime dt){
-  return DateFormat('yyyy/mm/dd').format(dt);
+  return (DateFormat('d/MMM').format(dt));
 }
 
 String convertDate(DateTime dt){
@@ -46,15 +50,48 @@ Future<void> showAlertDialogTwo(BuildContext context , String title , String bod
           ),
         ),
         actions: <Widget>[
-          TextButton(
-              child: const Text('Ok'),
-              onPressed: ok
-          ),
+
           TextButton(
               child: const Text('Cancel'),
               onPressed: (){
                 Navigator.pop(context);
               }
+          ),
+          TextButton(
+              child: const Text('Ok'),
+              onPressed: ok
+          ),
+        ],
+      );
+    },
+  );
+}
+
+
+Future<void> showAlertDialogDelete(BuildContext context , String title , String body ,
+    Function edit , Function delete) async {
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: false, // user must tap button!
+    builder: (BuildContext context) {
+      return AlertDialog( // <-- SEE HERE
+        title:  Text(title),
+        content: SingleChildScrollView(
+          child: ListBody(
+            children:  <Widget>[
+              Text(body),
+            ],
+          ),
+        ),
+        actions: <Widget>[
+
+          TextButton(
+              child: const Text('Edit'),
+              onPressed: edit
+          ),
+          TextButton(
+              child: const Text('Ok'),
+              onPressed: delete
           ),
         ],
       );

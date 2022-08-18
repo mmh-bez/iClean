@@ -86,21 +86,23 @@ class _MiniBarCoScreenState extends State<MiniBarCoScreen> {
                         itemBuilder: (BuildContext ctx, index) {
                           return GestureDetector(
                             onTap: (){
-                              model.miniBarCoRoomList[index].roomStatus == RoomStatus.VACANT ? showAlertDialog(
-                                  context, 'Info', "This room is vacant.No action required",  (){
-                                    Navigator.pop(context);
-                              }) :   Navigator.push(
+                              model.miniBarCoRoomList[index].roomStatus == RoomStatus.OCCUPIED ?  Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => MinibarCoItemScreen(roomNo:  model.miniBarCoRoomList[index].room),
                                 ),
-                              );
+                              ) :
+                              showAlertDialog(
+                                  context, 'Info', "This room is vacant.No action required",  (){
+                                Navigator.pop(context);
+                              });
                             },
                             child: Container(
                                alignment: Alignment.center,
                               child: Text(model.miniBarCoRoomList[index].room),
                               decoration: BoxDecoration(
-                                  color: model.miniBarCoRoomList[index].roomStatus == RoomStatus.VACANT ? Colors.grey : Colors.redAccent,
+       color: model.miniBarCoRoomList[index].roomStatus == RoomStatus.OCCUPIED
+                              ? Colors.redAccent :Colors.grey,
                                   borderRadius: BorderRadius.circular(15)
                               ),
 

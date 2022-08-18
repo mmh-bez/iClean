@@ -1,15 +1,15 @@
 // To parse this JSON data, do
 //
-//     final checkLIstModel = checkLIstModelFromJson(jsonString);
+//     final supervisorCheckListResponse = supervisorCheckListResponseFromJson(jsonString);
 
 import 'dart:convert';
 
-CheckLIstModel checkLIstModelFromJson(String str) => CheckLIstModel.fromJson(json.decode(str));
+SupervisorCheckListResponse supervisorCheckListResponseFromJson(String str) => SupervisorCheckListResponse.fromJson(json.decode(str));
 
-String checkLIstModelToJson(CheckLIstModel data) => json.encode(data.toJson());
+String supervisorCheckListResponseToJson(SupervisorCheckListResponse data) => json.encode(data.toJson());
 
-class CheckLIstModel {
-  CheckLIstModel({
+class SupervisorCheckListResponse {
+  SupervisorCheckListResponse({
     this.result,
     this.targetUrl,
     this.success,
@@ -25,7 +25,7 @@ class CheckLIstModel {
   bool unAuthorizedRequest;
   bool abp;
 
-  factory CheckLIstModel.fromJson(Map<String, dynamic> json) => CheckLIstModel(
+  factory SupervisorCheckListResponse.fromJson(Map<String, dynamic> json) => SupervisorCheckListResponse(
     result: json["result"] == null ? null : Result.fromJson(json["result"]),
     targetUrl: json["targetUrl"],
     success: json["success"] == null ? null : json["success"],
@@ -49,10 +49,10 @@ class Result {
     this.items,
   });
 
-  List<CheckListItem> items;
+  List<SupCheckItem> items;
 
   factory Result.fromJson(Map<String, dynamic> json) => Result(
-    items: json["items"] == null ? null : List<CheckListItem>.from(json["items"].map((x) => CheckListItem.fromJson(x))),
+    items: json["items"] == null ? null : List<SupCheckItem>.from(json["items"].map((x) => SupCheckItem.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -60,59 +60,59 @@ class Result {
   };
 }
 
-String checkListItemToJson(CheckListItem data) => json.encode(data.toJson());
-class CheckListItem {
-  CheckListItem({
-    this.attendantCheckList,
+String subCheckItemToJson(SupCheckItem data) => json.encode(data.toJson());
+class SupCheckItem {
+  SupCheckItem({
+    this.supCheckList,
     this.roomKey,
   });
 
-  List<AttendantCheckList> attendantCheckList;
+  List<SupCheckList> supCheckList;
   String roomKey;
 
-  factory CheckListItem.fromJson(Map<String, dynamic> json) => CheckListItem(
-    attendantCheckList: json["attendantCheckList"] == null ? null : List<AttendantCheckList>.from(json["attendantCheckList"].map((x) => AttendantCheckList.fromJson(x))),
+  factory SupCheckItem.fromJson(Map<String, dynamic> json) => SupCheckItem(
+    supCheckList: json["supCheckList"] == null ? null : List<SupCheckList>.from(json["supCheckList"].map((x) => SupCheckList.fromJson(x))),
     roomKey: json["roomKey"] == null ? null : json["roomKey"],
   );
 
   Map<String, dynamic> toJson() => {
-    "attendantCheckList": attendantCheckList == null ? null : List<dynamic>.from(attendantCheckList.map((x) => x.toJson())),
+    "supCheckList": supCheckList == null ? null : List<dynamic>.from(supCheckList.map((x) => x.toJson())),
     "roomKey": roomKey == null ? null : roomKey,
   };
 }
 
-class AttendantCheckList {
-  AttendantCheckList({
-    this.linenChecklistKey,
+class SupCheckList {
+  SupCheckList({
+    this.inspectionChecklistKey,
     this.itemKey,
     this.quantity,
-    this.itemCode,
-    this.description,
     this.combined,
+    this.checked,
+    this.chkLinenItem,
   });
 
-  String linenChecklistKey;
+  String inspectionChecklistKey;
   String itemKey;
-  int quantity;
-  dynamic itemCode;
-  dynamic description;
+  String quantity;
   String combined;
+  int checked;
+  bool chkLinenItem;
 
-  factory AttendantCheckList.fromJson(Map<String, dynamic> json) => AttendantCheckList(
-    linenChecklistKey: json["linenChecklistKey"] == null ? null : json["linenChecklistKey"],
+  factory SupCheckList.fromJson(Map<String, dynamic> json) => SupCheckList(
+    inspectionChecklistKey: json["inspectionChecklistKey"] == null ? null : json["inspectionChecklistKey"],
     itemKey: json["itemKey"] == null ? null : json["itemKey"],
     quantity: json["quantity"] == null ? null : json["quantity"],
-    itemCode: json["itemCode"],
-    description: json["description"],
     combined: json["combined"] == null ? null : json["combined"],
+    checked: json["checked"] == null ? null : json["checked"],
+    chkLinenItem: json["chkLinenItem"] == null ? null : json["chkLinenItem"],
   );
 
   Map<String, dynamic> toJson() => {
-    "linenChecklistKey": linenChecklistKey == null ? null : linenChecklistKey,
+    "inspectionChecklistKey": inspectionChecklistKey == null ? null : inspectionChecklistKey,
     "itemKey": itemKey == null ? null : itemKey,
     "quantity": quantity == null ? null : quantity,
-    "itemCode": itemCode,
-    "description": description,
     "combined": combined == null ? null : combined,
+    "checked": checked == null ? null : checked,
+    "chkLinenItem": chkLinenItem == null ? null : chkLinenItem,
   };
 }

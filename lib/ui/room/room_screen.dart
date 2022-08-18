@@ -39,7 +39,7 @@ class _RoomScreenState extends State<RoomScreen> {
   void initState() {
     // TODO: implement initState
     Provider.of<AppProvider>(context , listen: false).getRoomData(context);
-    Provider.of<AppProvider>(context , listen: false).getRoomList(context ,  "ALL" , "0");
+    Provider.of<AppProvider>(context , listen: false).getRoomList(context ,  "ALL" ,selectGuest, "0");
     super.initState();
   }
 
@@ -86,7 +86,7 @@ class _RoomScreenState extends State<RoomScreen> {
                     setState(() {
                       floorSelectedIndex = index;
                       Provider.of<AppProvider>(context , listen: false).getRoomList(context ,
-                          model.roomList[roomSelectedIndex].roomStatus,model.floorList[floorSelectedIndex].floor );
+                          model.roomList[roomSelectedIndex].roomStatus,model.guestStatusList[guestSelectedIndex].status,model.floorList[floorSelectedIndex].floor );
 
                     });
                   },
@@ -116,12 +116,18 @@ class _RoomScreenState extends State<RoomScreen> {
                     setState(() {
                       roomSelectedIndex = index;
                       Provider.of<AppProvider>(context , listen: false).getRoomList(context ,
-                          model.roomList[roomSelectedIndex].roomStatus, model.floorList[floorSelectedIndex].floor );
+                          model.roomList[roomSelectedIndex].roomStatus,model.guestStatusList[guestSelectedIndex].status , model.floorList[floorSelectedIndex].floor );
                     });
                   },
                   child: Container(
                     width: 80,
-                    color: roomSelectedIndex == index ? Colors.blue :Colors.orange,
+                    color: roomSelectedIndex == index ? Colors.black12
+                        : model.roomList[index].roomStatus == 'Vacant' ? Color(0xFF5cb85c)
+                        :model.roomList[index].roomStatus == 'Out Of Order' ? Color(0xFF5bc0de)
+                        :model.roomList[index].roomStatus == 'Occupied' ? Color(0xFFFFB3B3)
+                        :model.roomList[index].roomStatus == 'Due Out' ? Color(0xFFc9302c)
+                        : model.roomList[index].roomStatus == 'Hold' ? Color(0xFF31b0d5)
+                        : Colors.grey,
                     child: Center(child: Text(model.roomList[index].roomStatus , style: TextStyle(fontWeight: FontWeight.bold),)),
                   ),
                 );
@@ -146,7 +152,7 @@ class _RoomScreenState extends State<RoomScreen> {
                     setState(() {
                       guestSelectedIndex = index;
                       Provider.of<AppProvider>(context , listen: false).getRoomList(context ,
-                           model.roomList[roomSelectedIndex].roomStatus,model.floorList[floorSelectedIndex].floor  );
+                           model.roomList[roomSelectedIndex].roomStatus,model.guestStatusList[guestSelectedIndex].status , model.floorList[floorSelectedIndex].floor  );
                     });
                   },
                   child: Container(
@@ -171,9 +177,9 @@ class _RoomScreenState extends State<RoomScreen> {
         Center(child: Text('No Data' , style: TextStyle(fontSize: 20),),)
             :GridView.builder(
             gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 250,
+                maxCrossAxisExtent: 300,
                 childAspectRatio: 1.5,
-                crossAxisSpacing: 4,
+                crossAxisSpacing: 1,
                 mainAxisSpacing: 4),
             itemCount: model.roomGridList.length,
             itemBuilder: (BuildContext context,int index){
@@ -214,6 +220,24 @@ class _RoomScreenState extends State<RoomScreen> {
                                 ],
                               ),
                             ),
+                            Visibility(
+                              visible: model.roomGridList[index].dndStatus == '-' ? false : true,
+                              child: Container(
+                                child: FlutterSwitch(
+                                  value: model.roomGridList[index].dndStatus == 'Disable' ? true : false,
+                                activeColor: Color.fromRGBO(255, 51, 75, 1.0),
+                                inactiveColor: Colors.blue,
+                                onToggle: (value){
+                                  showAlertDialogTwo(context, 'Confirm', 'Confirm update "Do Not Distrub status for Room#${model.roomGridList[index].unit}', (){
+                                    Navigator.pop(context);
+                                    Provider.of<AppProvider>(context , listen: false).clickDnd(context , model.roomGridList[index].dndStatus.toLowerCase()
+                                        , model.roomGridList[index].unit ,'room');
+                                  });
+                                },
+                              ),
+                    ),
+                            ),
+
 
                           ],
                         ),
@@ -246,7 +270,7 @@ class _RoomScreenState extends State<RoomScreen> {
                   data.mRoomPopupItem.previousAttendantName == "none" ? TextSpan(text: '' ) :
                   WidgetSpan(child: InkWell(
                       onTap: (){
-                        Provider.of<AppProvider>(context , listen: false).clickUnassign(context, data.mRoomPopupItem.previousAttendantKey , roomNo );
+                        Provider.of<AppProvider>(context , listen: false).clickUnassign(context, data.mRoomPopupItem.previousAttendantKey , roomNo , data.mRoomPopupItem.previousAttendantName );
                       },
                       child: Icon(Icons.person_remove_rounded , color: Colors.red,))),
                 ],
@@ -278,8 +302,12 @@ class _RoomScreenState extends State<RoomScreen> {
                   ),
                   actions: <Widget>[
                     ElevatedButton(onPressed: (){
+                      data.mRoomPopupItem.previousAttendantName == "none" ?
+                      Provider.of<AppProvider>(context , listen: false).addAssign(context ,"", _roomPopUpItemList.maidKey ,
+                          _roomPopUpItemList.name , roomNo ,  "none")
+                          :
                       Provider.of<AppProvider>(context , listen: false).addAssign(context , data.mRoomPopupItem.previousAttendantKey, _roomPopUpItemList.maidKey ,
-                          _roomPopUpItemList.name , roomNo);
+                          _roomPopUpItemList.name , roomNo , data.mRoomPopupItem.previousAttendantName);
                       Navigator.pop(context);
                     }, child: Text('Assign')),
                     ElevatedButton(onPressed: (){

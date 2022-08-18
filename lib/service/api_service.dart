@@ -19,6 +19,9 @@ import 'package:i_clean/models/room/room_grid_response.dart';
 import 'package:i_clean/models/room/room_popup_response.dart';
 import 'package:i_clean/models/room/room_status_response.dart';
 import 'package:i_clean/models/room_button.dart';
+import 'package:i_clean/models/supervisor/super_visor_checklist_response.dart';
+import 'package:i_clean/models/supervisor/super_visor_grid_response.dart';
+import 'package:i_clean/models/supervisor/super_visor_status_response.dart';
 import 'package:i_clean/models/view_logs_response.dart';
 import 'package:i_clean/models/woentry/wo_entry_model.dart';
 import 'package:i_clean/models/task_model.dart';
@@ -191,9 +194,13 @@ class ApiService{
 
   }
 
-  static Future<BaseResponse> clickStart(BuildContext context, String room) async{
+  static Future<BaseResponse> clickStart(BuildContext context, String room , String roomkey) async{
     var _api = await ApiUtil.connectWithAuth(context);
-    response = await _api.post('/services/app/MyTask/StartTask?strMode=s&strRoomNo=$room' );
+    response = await _api.post('/services/app/PopupUpdateMaidStatus/StartSave', data: {
+    "strMode": "s",
+    "strRoomNo": room,
+    "roomKey": roomkey
+    });
     return baseResponseFromJson(response.data);
   }
 
@@ -210,16 +217,26 @@ class ApiService{
     return checkLIstModelFromJson(response.data);
   }
 
-  static Future<BaseResponse> clickPause(BuildContext context, String unit) async{
+  static Future<BaseResponse> clickPause(BuildContext context, String unit , String note , String roomKey) async{
     var _api = await ApiUtil.connectWithAuth(context);
-    response = await _api.post('/services/app/MyTask/OnDelayTask?strMode=delay&strRoomNo=$unit' );
+    response = await _api.post('/services/app/PopupUpdateMaidStatus/DelaySave' , data: {
+      "strMode": "delay",
+      "strRoomNo": unit,
+      "note": note,
+      "roomKey": roomKey
+    });
     return baseResponseFromJson(response.data);
 
   }
 
-  static Future<BaseResponse> clickEnd(BuildContext context, String unit) async{
+  static Future<BaseResponse> clickEnd(BuildContext context, String unit , String roomKey) async{
     var _api = await ApiUtil.connectWithAuth(context);
-    response = await _api.post('/services/app/MyTask/EndTask?strMode=e&strRoomNo=$unit' );
+    response = await _api.post('/services/app/PopupUpdateMaidStatus/EndSave' , data:
+    {
+      "strMode": "e",
+      "strRoomNo": unit,
+      "roomKey": roomKey
+    });
     return baseResponseFromJson(response.data);
   }
 
@@ -229,15 +246,15 @@ class ApiService{
     return roomStatusResponseFromJson(response.data);
   }
 
-  static Future<RoomGridResponse> getRoomGrid(BuildContext context, String roomStatus, String floor) async{
+  static Future<RoomGridResponse> getRoomGrid(BuildContext context, String roomStatus, String guestStatus , String floor) async{
     var _api = await ApiUtil.connectNoAuth(context);
-    response = await _api.get('/services/app/RoomStatusPage/GetBindGrid?SelectedRoomStatus=$roomStatus&floorNo=$floor' );
+    response = await _api.get('/services/app/RoomStatusPage/GetBindGrid?SelectedRoomStatus=$roomStatus&GuestStatus=$guestStatus&floorNo=$floor' );
     return roomGridResponseFromJson(response.data);
   }
 
   static Future<RoomPopUpResponse> getRoomPopUpData(BuildContext context, roomNo) async{
     var _api = await ApiUtil.connectNoAuth(context);
-    response = await _api.get('/services/app/RoomStatusPage/GetRoomPopupViewData?mode=s&roomNo=$roomNo' );
+    response = await _api.get('/services/app/RoomStatusPage/GetRoomPopupViewData?roomNo=$roomNo' );
     return roomPopUpResponseFromJson(response.data);
   }
 
@@ -256,4 +273,72 @@ class ApiService{
     );
     return baseResponseFromJson(response.data);
   }
+
+  static Future<SupervisorStatusResponse> getSupervisroData(BuildContext context) async{
+    var _api = await ApiUtil.connectWithAuth(context);
+    response = await _api.get('/services/app/RoomsToInspect/GetRoomToInspectViewData'
+    );
+    return supervisorStatusResponseFromJson(response.data);
+  }
+
+  static Future<SupervisorGridResponse> getSupervisorGrid(BuildContext context , String selectedRoom, String floor , String selectedStaff) async{
+    var _api = await ApiUtil.connectWithAuth(context);
+    response = await _api.get('/services/app/RoomsToInspect/GetBindGrid?SelectedRoomStatus=$selectedRoom&FloorNo=$floor&MaidKey=$selectedStaff'
+    );
+    return supervisorGridResponseFromJson(response.data);
+  }
+
+  static Future<HistoryLogOfRoom> getSupervisorHistory(BuildContext context , String roomKey)async {
+    var _api = await ApiUtil.connectWithAuth(context);
+    response = await _api.get('/services/app/MyTask/GetShowLog?roomkey=$roomKey');
+    return historyLogOfRoomFromJson(response.data);
+
+  }
+
+  static Future<BaseResponse> confirmClean(BuildContext context, String room, String text , String phy , String roomKey) async {
+    var _api = await ApiUtil.connectWithAuth(context);
+    response = await _api.post('/services/app/PopupUpdateMaidStatus/CleanSave' , data: {
+      "strMode": "c",
+      "strRoomNo": room,
+      "note": text,
+      "phy": phy,
+      "roomKey": roomKey
+    });
+    return baseResponseFromJson(response.data);
+  }
+
+  static confirmDirty(BuildContext context, String room, String text, String phy , String roomKey) async{
+    var _api = await ApiUtil.connectWithAuth(context);
+    response = await _api.post('/services/app/PopupUpdateMaidStatus/DirtySave' , data: {
+      "strMode": "d",
+      "strRoomNo": room,
+      "note": text,
+      "phy": phy,
+      "roomKey": roomKey
+    });
+    return baseResponseFromJson(response.data);
+  }
+
+  static Future<SupervisorCheckListResponse> getSupCheckList(BuildContext context, String unit) async{
+    var _api = await ApiUtil.connectWithAuth(context);
+    response = await _api.get('/services/app/RoomsToInspect/GetSupCheckList?strRoomNo=$unit');
+    return supervisorCheckListResponseFromJson(response.data);
+  }
+
+  static Future<BaseResponse> saveCheckList(BuildContext context, var data) async{
+    var _api = await ApiUtil.connectWithAuth(context);
+    response = await _api.post('/services/app/RoomsToInspect/SupCheckListSave' , data: data);
+    return baseResponseFromJson(response.data);
+
+  }
+
+  static Future<BaseResponse> updateAttendantCheckList(BuildContext context , String json) async{
+    var _api = await ApiUtil.connectWithAuth(context);
+    response = await _api.post('/services/app/MyTask/CheckListSave' , data: json);
+    return baseResponseFromJson(response.data);
+  }
+
+
+
+
 }
