@@ -107,6 +107,76 @@ class _StateDashBoard extends State<DashBoard> {
                                   mainAxisSize: MainAxisSize.max,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
+                                    InkWell(
+                                      onTap: (){
+                                        Navigator.pushNamed(context, SupervisorScreen.routeName);
+
+                                      },
+                                      child: Card(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(15.0),
+                                        ),
+                                        elevation: 8,
+                                        child: ClipPath(
+                                          clipper: ShapeBorderClipper(
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(10))),
+                                          child: Container(
+                                              height: 120,
+                                              width: MediaQuery.of(context).size.width /2.4,
+                                              alignment: Alignment.centerLeft,
+                                              child: Column(
+                                                children: [
+                                                  Container(
+                                                      height: 80,
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.orangeAccent,
+                                                      ),
+                                                      child: Padding(
+                                                        padding: EdgeInsets.only(right: 4),
+                                                        child: Row(
+                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                          children: [
+                                                            Icon(Icons.note_add , size: 80, color: Colors.white,),
+                                                            Container(
+                                                              child: Column(
+                                                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                                  children: [
+                                                                    Text(model.assignedTask.toString() , style: TextStyle(fontWeight: FontWeight.bold ,color: Colors.white, fontSize: 18),),
+                                                                    Text('Assigned \nTasks',  textAlign: TextAlign.end, style: TextStyle(color: Colors.white),),
+                                                                  ]
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      )
+                                                  ),
+                                                  Padding(
+                                                    padding: EdgeInsets.only(left: 8 , right: 8),
+                                                    child: Container(
+                                                        height: 40,
+                                                        decoration: BoxDecoration(
+                                                          color: Colors.white54,
+                                                        ),
+                                                        child: Row(
+                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                          children: [
+                                                            Text('View Details' , style: TextStyle(color: Colors.orangeAccent), ),
+                                                            Icon(Icons.forward_outlined ,color: Colors.orangeAccent,),
+                                                          ],
+                                                        )
+
+                                                    ),
+                                                  ),
+
+
+                                                ],
+                                              )),
+                                        ),
+                                      ),
+                                    ),
+
                                     Visibility(
                                       visible: isAdmin,
                                       child: InkWell(
@@ -131,22 +201,23 @@ class _StateDashBoard extends State<DashBoard> {
                                                     Container(
                                                         height: 80,
                                                         decoration: BoxDecoration(
-                                                          color: Colors.orangeAccent,
+                                                          color: Colors.blueAccent,
                                                         ),
                                                         child: Padding(
-                                                          padding: EdgeInsets.only(right: 4),
+                                                          padding: EdgeInsets.only(left: 8 , right: 8),
                                                           child: Row(
                                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                             children: [
-                                                              Icon(Icons.note_add , size: 80, color: Colors.white,),
+                                                              Icon(Icons.view_list_outlined , size: 80, color: Colors.white,),
                                                               Container(
                                                                 child: Column(
                                                                     crossAxisAlignment: CrossAxisAlignment.end,
                                                                     mainAxisAlignment: MainAxisAlignment.center,
                                                                     children: [
-                                                                      Text(model.assignedTask.toString() , style: TextStyle(fontWeight: FontWeight.bold ,color: Colors.white, fontSize: 18),),
-                                                                      Text('Assigned \nTasks',  textAlign: TextAlign.end, style: TextStyle(color: Colors.white),),
- ]
+
+                                                                      Text(model.inspectRoom.toString() , style: TextStyle(fontWeight: FontWeight.bold ,color: Colors.white, fontSize: 18),),
+                                                                      Text('Rooms to \ninspect!',  textAlign: TextAlign.end, style: TextStyle(color: Colors.white),),
+                                                                    ]
                                                                 ),
                                                               ),
                                                             ],
@@ -163,8 +234,8 @@ class _StateDashBoard extends State<DashBoard> {
                                                           child: Row(
                                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                             children: [
-                                                              Text('View Details' , style: TextStyle(color: Colors.orangeAccent), ),
-                                                              Icon(Icons.forward_outlined ,color: Colors.orangeAccent,),
+                                                              Text('View Details' , style: TextStyle(color: Colors.blue), ),
+                                                              Icon(Icons.forward_outlined ,color: Colors.blue,),
                                                             ],
                                                           )
 
@@ -175,76 +246,6 @@ class _StateDashBoard extends State<DashBoard> {
                                                   ],
                                                 )),
                                           ),
-                                        ),
-                                      ),
-                                    ),
-
-                                    InkWell(
-                                      onTap: (){
-                                        Navigator.pushNamed(context, SupervisorScreen.routeName);
-                                      },
-                                      child: Card(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(15.0),
-                                        ),
-                                        elevation: 8,
-                                        child: ClipPath(
-                                          clipper: ShapeBorderClipper(
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(10))),
-                                          child: Container(
-                                              height: 120,
-                                              width: MediaQuery.of(context).size.width /2.4,
-                                              alignment: Alignment.centerLeft,
-                                              child: Column(
-                                                children: [
-                                                  Container(
-                                                      height: 80,
-                                                      decoration: BoxDecoration(
-                                                        color: Colors.blueAccent,
-                                                      ),
-                                                      child: Padding(
-                                                        padding: EdgeInsets.only(left: 8 , right: 8),
-                                                        child: Row(
-                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                          children: [
-                                                            Icon(Icons.view_list_outlined , size: 80, color: Colors.white,),
-                                                            Container(
-                                                              child: Column(
-                                                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                                  children: [
-
-                                                                    Text(model.inspectRoom.toString() , style: TextStyle(fontWeight: FontWeight.bold ,color: Colors.white, fontSize: 18),),
-                                                                    Text('Rooms to \ninspect!',  textAlign: TextAlign.end, style: TextStyle(color: Colors.white),),
-                                                                  ]
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      )
-                                                  ),
-                                                  Padding(
-                                                    padding: EdgeInsets.only(left: 8 , right: 8),
-                                                    child: Container(
-                                                        height: 40,
-                                                        decoration: BoxDecoration(
-                                                          color: Colors.white54,
-                                                        ),
-                                                        child: Row(
-                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                          children: [
-                                                            Text('View Details' , style: TextStyle(color: Colors.blue), ),
-                                                            Icon(Icons.forward_outlined ,color: Colors.blue,),
-                                                          ],
-                                                        )
-
-                                                    ),
-                                                  ),
-
-
-                                                ],
-                                              )),
                                         ),
                                       ),
                                     )

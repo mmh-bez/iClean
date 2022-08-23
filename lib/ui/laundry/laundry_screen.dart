@@ -99,6 +99,7 @@ class _LaundryScreenState extends State<LaundryScreen> {
                                     content: Form(
                                       key: _formKey,
                                       child: TextFormField(
+                                        keyboardType: TextInputType.number,
                                         autofocus: true,
                                         controller: voucherController,
                                         validator: (text){

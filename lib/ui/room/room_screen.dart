@@ -124,8 +124,8 @@ class _RoomScreenState extends State<RoomScreen> {
                     color: roomSelectedIndex == index ? Colors.black12
                         : model.roomList[index].roomStatus == 'Vacant' ? Color(0xFF5cb85c)
                         :model.roomList[index].roomStatus == 'Out Of Order' ? Color(0xFF5bc0de)
-                        :model.roomList[index].roomStatus == 'Occupied' ? Color(0xFFFFB3B3)
-                        :model.roomList[index].roomStatus == 'Due Out' ? Color(0xFFc9302c)
+                        :model.roomList[index].roomStatus == 'Occupied' ? Color(0xFFFFc0cb)
+                        :model.roomList[index].roomStatus == 'Due Out' ? Color(0xFFff2e2e)
                         : model.roomList[index].roomStatus == 'Hold' ? Color(0xFF31b0d5)
                         : Colors.grey,
                     child: Center(child: Text(model.roomList[index].roomStatus , style: TextStyle(fontWeight: FontWeight.bold),)),
@@ -157,7 +157,7 @@ class _RoomScreenState extends State<RoomScreen> {
                   },
                   child: Container(
                     width: 80,
-                    color: guestSelectedIndex == index ? Colors.blue :Colors.orange,
+                    color: guestSelectedIndex == index ? Colors.black12 :Colors.white,
                     child: Center(child: Text(model.guestStatusList[index].status , style: TextStyle(fontWeight: FontWeight.bold),)),
                   ),
                 );

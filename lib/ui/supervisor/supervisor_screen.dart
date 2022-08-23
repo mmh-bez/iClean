@@ -136,12 +136,12 @@ class _SupervisorScreenState extends State<SupervisorScreen> {
                     width: 80,
                     color: roomSelectedIndex == index
                         ? Colors.black12
-                        : model.superVisorRoomList[index].roomStatus == 'Vacant' ? Color(0xFF5cb85c)
-                        :model.superVisorRoomList[index].roomStatus == 'Out Of Order' ? Color(0xFF5bc0de)
-                        :model.superVisorRoomList[index].roomStatus == 'Occupied' ? Color(0xFFFFB3B3)
-                        :model.superVisorRoomList[index].roomStatus == 'Due Out' ? Color(0xFFc9302c)
-                        : model.superVisorRoomList[index].roomStatus == 'Hold' ? Color(0xFF31b0d5)
-                    : Colors.grey,
+                        : model.roomList[index].roomStatus == 'Vacant' ? Color(0xFF5cb85c)
+                        :model.roomList[index].roomStatus == 'Out Of Order' ? Color(0xFF5bc0de)
+                        :model.roomList[index].roomStatus == 'Occupied' ? Color(0xFFFFc0cb)
+                        :model.roomList[index].roomStatus == 'Due Out' ? Color(0xFFff2e2e)
+                        : model.roomList[index].roomStatus == 'Hold' ? Color(0xFF31b0d5)
+                        : Colors.grey,
 
                     child: Center(
                         child: Text(
