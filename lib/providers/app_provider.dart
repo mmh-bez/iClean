@@ -595,6 +595,7 @@ class AppProvider extends BaseProvider{
       getAttendantList(context, currentFloorName, currentMaidStatus, currentGuestStatus, currentRoomStatus);
       Navigator.pop(context);
       showAlertDialog(context, 'Success', "Record has been saved", (){
+        getDashBoardData(context);
         Navigator.pop(context);
       });
     }else{
@@ -651,6 +652,7 @@ class AppProvider extends BaseProvider{
       Navigator.pop(context);
       getAttendantList(context, currentFloorName, currentMaidStatus, currentGuestStatus, currentRoomStatus);
       showAlertDialog(context, 'Success', "Record has been saved", (){
+        getDashBoardData(context);
         Navigator.pop(context);
       });
     }else{
@@ -670,6 +672,7 @@ class AppProvider extends BaseProvider{
       Navigator.pop(context);
       getAttendantList(context, currentFloorName, currentMaidStatus, currentGuestStatus, currentRoomStatus);
       showAlertDialog(context, 'Success', "Record has been saved", (){
+        getDashBoardData(context);
         Navigator.pop(context);
       });
     }else{
@@ -764,7 +767,7 @@ class AppProvider extends BaseProvider{
       Navigator.pop(context);
       getRoomList(context, roomPopupStatus,guestStatus, roomFloor);
       showAlertDialog(context, "Success", "Record have been saved", (){
-
+        getDashBoardData(context);
       });
     }else{
       showAlertDialog(context, "Fail", "Please try again", (){
@@ -829,13 +832,14 @@ class AppProvider extends BaseProvider{
     BaseResponse _res = await ApiService.confirmClean(context , room, text , phy , roomKey);
     if(_res.success){
       Navigator.pop(context);
+      Navigator.pop(context);
       getSupervisorGrid(context, superVisorSelectedRoom, superFloor,superSelectedStaff);
       showAlertDialog(context, "Success", "Record have been saved", (){
+        Navigator.pop(context);
       });
     }else{
       Navigator.pop(context);
       showAlertDialog(context, "Fail", "Please try again", (){
-
       });
     }
   }
@@ -845,8 +849,10 @@ class AppProvider extends BaseProvider{
     BaseResponse _res = await ApiService.confirmDirty(context , room, text , phy , roomKey);
     if(_res.success){
       Navigator.pop(context);
+      Navigator.pop(context);
       getSupervisorGrid(context, superVisorSelectedRoom, superFloor,superSelectedStaff);
       showAlertDialog(context, "Success", "Record have been saved", (){
+        Navigator.pop(context);
       });
     }else{
       Navigator.pop(context);

@@ -517,8 +517,7 @@ class _AttendantScreenState extends State<AttendantScreen> {
             child: ElevatedButton.icon(onPressed: (){
               clickHistory(model , index);
 
-
-            },
+              },
               style: ElevatedButton.styleFrom(
                   primary: Colors.orange
               ),

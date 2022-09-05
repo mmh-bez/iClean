@@ -18,7 +18,7 @@ class LoginScreen extends StatefulWidget{
 class _StateLoginScreen extends State<LoginScreen> {
   String text = '';
   TextEditingController _pinController = TextEditingController();
-  final myController = TextEditingController(text: "ChancellorT");
+  final myController = TextEditingController(text: "Chancellor");
 
   @override
   Widget build(BuildContext context) {
