@@ -4,8 +4,8 @@ import 'package:i_clean/utils/const.dart';
 import 'package:i_clean/utils/storage_util.dart';
 
 class ApiUtil {
-  static Dio apiWithNoAuth = Dio();
-  static Dio apiWithAuth = Dio();
+  static Dio apiWithNoAuth;
+  static Dio apiWithAuth ;
 
   static Future<Dio> connectNoAuth(BuildContext context) async {
     initUrl(context);
@@ -18,7 +18,6 @@ class ApiUtil {
   }
 
   static Dio initUrl(BuildContext context) {
-    apiWithNoAuth = new Dio();
 
     // Set default configs
     apiWithNoAuth.options.baseUrl = baseApi;

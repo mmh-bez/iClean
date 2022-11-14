@@ -70,10 +70,10 @@ class NotificationService {
   }
 
   Future<void> showLocalNotification({
-    required int id,
-    required String title,
-    required String body,
-    required String payload,
+     int id,
+     String title,
+     String body,
+     String payload,
   }) async {
     final platformChannelSpecifics = await _notificationDetails();
     await _localNotifications.show(

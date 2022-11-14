@@ -39,7 +39,6 @@ class MyApp extends StatelessWidget {
     ),
       ],
       child: GetMaterialApp(
-        navigatorKey: alice.getNavigatorKey(),
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primaryColor: Colors.orange,

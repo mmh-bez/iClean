@@ -1,4 +1,3 @@
-import 'package:alice/alice.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -10,7 +9,6 @@ String token ;
 String staffKey;
 String name;
 bool isAdmin = false;
-Alice alice = Alice(showNotification: true, navigatorKey: nav);
 
 String formatDate(DateTime dt){
   return (DateFormat('d/MMM').format(dt));
