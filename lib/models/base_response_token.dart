@@ -4,12 +4,12 @@
 
 import 'dart:convert';
 
-BaseResponse baseResponseFromJson(String str) => BaseResponse.fromMap(json.decode(str));
+BaseResponseToken baseResponseTokenFromJson(String str) => BaseResponseToken.fromMap(json.decode(str));
 
-String baseResponseToMap(BaseResponse data) => json.encode(data.toMap());
+String baseResponseTokenToMap(BaseResponseToken data) => json.encode(data.toMap());
 
-class BaseResponse {
-  BaseResponse({
+class BaseResponseToken {
+  BaseResponseToken({
     this.result,
     this.targetUrl,
     this.success,
@@ -25,8 +25,8 @@ class BaseResponse {
   bool unAuthorizedRequest;
   bool abp;
 
-  factory BaseResponse.fromMap(Map<String, dynamic> json) => BaseResponse(
-   // result: List<Result>.from(json["result"].map((x) => Result.fromMap(x))),
+  factory BaseResponseToken.fromMap(Map<String, dynamic> json) => BaseResponseToken(
+    result: json["result"] == null ? null :List<Result>.from(json["result"].map((x) => Result.fromMap(x))),
     targetUrl: json["targetUrl"],
     success: json["success"],
     error: json["error"],

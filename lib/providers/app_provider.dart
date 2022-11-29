@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,6 +13,7 @@ import 'package:i_clean/models/attendant/floor_response_model.dart';
 import 'package:i_clean/models/attendant/guest_status_model.dart';
 import 'package:i_clean/models/attendant/history_log_of_room.dart';
 import 'package:i_clean/models/attendant/maid_status_model.dart';
+import 'package:i_clean/models/base_response_token.dart';
 import 'package:i_clean/models/dash_board_model.dart';
 import 'package:i_clean/models/history_model.dart';
 import 'package:i_clean/models/laundry/laundry_item_response.dart';
@@ -117,6 +120,10 @@ class AppProvider extends BaseProvider{
       staffKey = loginModel.result.staffKey;
       name = loginModel.result.name;
       isAdmin = loginModel.result.isAdmin;
+      await FirebaseMessaging.instance.getToken().then((token) {
+        print('-------'+token);
+        ApiService.addFirebaseToken(context , token);
+      });
       Navigator.pushNamedAndRemoveUntil(context, DashBoard.routeName, (Route<dynamic> route) => false);
     }else{
       Navigator.pop(context);
@@ -666,10 +673,11 @@ class AppProvider extends BaseProvider{
 
   void clickEnd(BuildContext context, String unit , String roomKey) async{
     showLoaderDialog(context);
-    BaseResponse _base = await ApiService.clickEnd(context , unit , roomKey);
+    BaseResponseToken _base = await ApiService.clickEnd(context , unit , roomKey);
     if(_base.success == true){
       Navigator.pop(context);
       Navigator.pop(context);
+      await ApiService.sendNotification(context, "End", _base.result.first.message, _base.result.first.to);
       getAttendantList(context, currentFloorName, currentMaidStatus, currentGuestStatus, currentRoomStatus);
       showAlertDialog(context, 'Success', "Record has been saved", (){
         getDashBoardData(context);
@@ -742,10 +750,12 @@ class AppProvider extends BaseProvider{
       "previousAttendantName": previousName
     };
 
-    BaseResponse _base = await ApiService.addAssign(context, data);
+    BaseResponseToken _base = await ApiService.addAssign(context, data);
     if(_base.success){
+      await ApiService.sendNotification(context, "Assign", _base.result.first.message, _base.result.first.to);
       getRoomList(context, roomPopupStatus, guestStatus,roomFloor);
-      showAlertDialog(context, "Success", "Record have been saved", (){
+      showAlertDialog(context, "Success", "Record have been saved", ()async{
+
 
       });
     }else{
@@ -762,9 +772,10 @@ class AppProvider extends BaseProvider{
       "previousAttendantName": name
     };
 
-    BaseResponse _base = await ApiService.clickUnassign(context, data);
+    BaseResponseToken _base = await ApiService.clickUnassign(context, data);
     if(_base.success){
       Navigator.pop(context);
+      await ApiService.sendNotification(context, "Assign", _base.result.first.message, _base.result.first.to);
       getRoomList(context, roomPopupStatus,guestStatus, roomFloor);
       showAlertDialog(context, "Success", "Record have been saved", (){
         getDashBoardData(context);
@@ -829,10 +840,11 @@ class AppProvider extends BaseProvider{
 
   void confirmClean(BuildContext context, String room, String text , String phy , String roomKey)async {
     showLoaderDialog(context);
-    BaseResponse _res = await ApiService.confirmClean(context , room, text , phy , roomKey);
-    if(_res.success){
+    BaseResponseToken _base = await ApiService.confirmClean(context , room, text , phy , roomKey);
+    if(_base.success){
       Navigator.pop(context);
       Navigator.pop(context);
+      await ApiService.sendNotification(context, "Clean", _base.result.first.message, _base.result.first.to);
       getSupervisorGrid(context, superVisorSelectedRoom, superFloor,superSelectedStaff);
       showAlertDialog(context, "Success", "Record have been saved", (){
         Navigator.pop(context);
@@ -846,10 +858,11 @@ class AppProvider extends BaseProvider{
 
   void confirmDirty(BuildContext context, String room, String text, String phy ,String roomKey) async {
     showLoaderDialog(context);
-    BaseResponse _res = await ApiService.confirmDirty(context , room, text , phy , roomKey);
-    if(_res.success){
+    BaseResponseToken _base = await ApiService.confirmDirty(context , room, text , phy , roomKey);
+    if(_base.success){
       Navigator.pop(context);
       Navigator.pop(context);
+      await ApiService.sendNotification(context, "Dirty", _base.result.first.message, _base.result.first.to);
       getSupervisorGrid(context, superVisorSelectedRoom, superFloor,superSelectedStaff);
       showAlertDialog(context, "Success", "Record have been saved", (){
         Navigator.pop(context);
@@ -950,6 +963,28 @@ class AppProvider extends BaseProvider{
     qty = 1;
     selectedQty = 1;
     notifyListeners();
+  }
+
+  void requestPermission() async{
+    FirebaseMessaging messaging= FirebaseMessaging.instance;
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: true,
+      badge: true,
+      carPlay: true,
+      criticalAlert: true,
+      provisional: true,
+      sound: true
+    );
+
+    if(settings.authorizationStatus == AuthorizationStatus.authorized){
+      print('User granted permission');
+    }else  if(settings.authorizationStatus == AuthorizationStatus.provisional){
+      print('User granted provisional permission');
+    }else{
+      print('User declined or has not accepted suth');
+    }
+
   }
 
 }

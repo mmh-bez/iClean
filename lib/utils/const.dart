@@ -9,6 +9,7 @@ String token ;
 String staffKey;
 String name;
 bool isAdmin = false;
+String serverKey = "AAAAKyWo4oc:APA91bHqkfMO1M_t_thtJuwpuSKN8qadqR4Eqy5mOKFCLw3exIWjSYXHLuPZ3zuvS5pgFKfVmmlzmUSDERkN8PZVhN6iM1bVZdWRi4L5H8wHyq-G87aLD2GtNDUbAhORgtE1fXyuyzWH";
 
 String formatDate(DateTime dt){
   return (DateFormat('d/MMM').format(dt));
@@ -26,7 +27,10 @@ Future<void> showAlertDialog(BuildContext context , String title , String body ,
       actions: [
         TextButton(
           child: const Text("Ok"),
-          onPressed: () => Get.back(),
+          onPressed: () {
+            Get.back();
+            ok();
+          },
         ),
       ],
     ),

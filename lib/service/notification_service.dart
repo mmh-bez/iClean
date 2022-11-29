@@ -7,7 +7,7 @@ class NotificationService {
 
   Future<void> initializePlatformNotifications() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
-    AndroidInitializationSettings('ic_stat_justwater');
+    AndroidInitializationSettings('notification_icon');
 
     final IOSInitializationSettings initializationSettingsIOS =
     IOSInitializationSettings(

@@ -4,8 +4,8 @@ import 'package:i_clean/utils/const.dart';
 import 'package:i_clean/utils/storage_util.dart';
 
 class ApiUtil {
-  static Dio apiWithNoAuth;
-  static Dio apiWithAuth ;
+  static Dio apiWithNoAuth = Dio();
+  static Dio apiWithAuth = Dio();
 
   static Future<Dio> connectNoAuth(BuildContext context) async {
     initUrl(context);
@@ -29,7 +29,8 @@ class ApiUtil {
     apiWithNoAuth.interceptors.add(LogInterceptor(requestBody: true));
     apiWithNoAuth.interceptors.add(LogInterceptor(responseBody: true));
     apiWithNoAuth.options.responseType = ResponseType.plain;
-    apiWithNoAuth.options.headers['Accept'] = 'application/json';
+    apiWithNoAuth.options.headers['Content-Type'] = 'application/json';
+    apiWithNoAuth.options.headers['Abp.TenantId'] = '1';
     apiWithNoAuth.options.validateStatus = ((code){
   if(code == 500){
         showAlertDialog(context, "Error", "Internal Server Error.Please try again later.", (){

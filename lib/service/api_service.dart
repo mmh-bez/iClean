@@ -6,6 +6,7 @@ import 'package:i_clean/models/attendant/attendant_data_model.dart';
 import 'package:i_clean/models/attendant/attendant_model.dart';
 import 'package:i_clean/models/attendant/check_list_model.dart';
 import 'package:i_clean/models/attendant/history_log_of_room.dart';
+import 'package:i_clean/models/base_response_token.dart';
 import 'package:i_clean/models/floor_model.dart';
 import 'package:i_clean/models/history_model.dart';
 import 'package:i_clean/models/laundry/laundry_item_response.dart';
@@ -41,7 +42,8 @@ class ApiService{
       "twoFactorRememberClientToken": "string",
       "singleSignIn": true,
       "returnUrl": "string",
-      "captchaResponse": "string"
+      "captchaResponse": "string",
+      "tenantName": "Chancellor"
     });
 
     return loginModelFromJson(response.data);
@@ -229,7 +231,7 @@ class ApiService{
 
   }
 
-  static Future<BaseResponse> clickEnd(BuildContext context, String unit , String roomKey) async{
+  static Future<BaseResponseToken> clickEnd(BuildContext context, String unit , String roomKey) async{
     var _api = await ApiUtil.connectWithAuth(context);
     response = await _api.post('/services/app/PopupUpdateMaidStatus/EndSave' , data:
     {
@@ -237,7 +239,7 @@ class ApiService{
       "strRoomNo": unit,
       "roomKey": roomKey
     });
-    return baseResponseFromJson(response.data);
+    return baseResponseTokenFromJson(response.data);
   }
 
   static Future<RoomStatusResponse> getRoomData(BuildContext context) async{
@@ -258,20 +260,20 @@ class ApiService{
     return roomPopUpResponseFromJson(response.data);
   }
 
-  static Future<BaseResponse> addAssign(BuildContext context, Map<String, dynamic> data) async {
+  static Future<BaseResponseToken> addAssign(BuildContext context, Map<String, dynamic> data) async {
     var _api = await ApiUtil.connectWithAuth(context);
     response = await _api.post('/services/app/RoomStatusPage/btnAssignClick' ,
     data: data
     );
-    return baseResponseFromJson(response.data);
+    return baseResponseTokenFromJson(response.data);
   }
 
-  static Future<BaseResponse> clickUnassign(BuildContext context, Map<String, dynamic> data) async{
+  static Future<BaseResponseToken> clickUnassign(BuildContext context, Map<String, dynamic> data) async{
     var _api = await ApiUtil.connectWithAuth(context);
     response = await _api.post('/services/app/RoomStatusPage/lbtnUnassignClick' ,
         data: data
     );
-    return baseResponseFromJson(response.data);
+    return baseResponseTokenFromJson(response.data);
   }
 
   static Future<SupervisorStatusResponse> getSupervisroData(BuildContext context) async{
@@ -295,7 +297,7 @@ class ApiService{
 
   }
 
-  static Future<BaseResponse> confirmClean(BuildContext context, String room, String text , String phy , String roomKey) async {
+  static Future<BaseResponseToken> confirmClean(BuildContext context, String room, String text , String phy , String roomKey) async {
     var _api = await ApiUtil.connectWithAuth(context);
     response = await _api.post('/services/app/PopupUpdateMaidStatus/CleanSave' , data: {
       "strMode": "c",
@@ -304,10 +306,10 @@ class ApiService{
       "phy": phy,
       "roomKey": roomKey
     });
-    return baseResponseFromJson(response.data);
+    return baseResponseTokenFromJson(response.data);
   }
 
-  static confirmDirty(BuildContext context, String room, String text, String phy , String roomKey) async{
+  static Future<BaseResponseToken> confirmDirty(BuildContext context, String room, String text, String phy , String roomKey) async{
     var _api = await ApiUtil.connectWithAuth(context);
     response = await _api.post('/services/app/PopupUpdateMaidStatus/DirtySave' , data: {
       "strMode": "d",
@@ -316,7 +318,7 @@ class ApiService{
       "phy": phy,
       "roomKey": roomKey
     });
-    return baseResponseFromJson(response.data);
+    return baseResponseTokenFromJson(response.data);
   }
 
   static Future<SupervisorCheckListResponse> getSupCheckList(BuildContext context, String unit) async{
@@ -336,6 +338,28 @@ class ApiService{
     var _api = await ApiUtil.connectWithAuth(context);
     response = await _api.post('/services/app/MyTask/CheckListSave' , data: json);
     return baseResponseFromJson(response.data);
+  }
+
+  static void addFirebaseToken(BuildContext context , String token) async{
+    var _api = await ApiUtil.connectWithAuth(context);
+    response = await _api.post('/services/app/MsgNotification/UpdateFirebaseToken?fbk=$token');
+
+  }
+
+  static Future<int> sendNotification(BuildContext context , String title , String body , List<String> tokenList) async{
+    Dio dio = Dio();
+    dio.options.headers['Content-Type'] = 'application/json';
+    dio.options.headers["Authorization"] = "key=AAAAKyWo4oc:APA91bHqkfMO1M_t_thtJuwpuSKN8qadqR4Eqy5mOKFCLw3exIWjSYXHLuPZ3zuvS5pgFKfVmmlzmUSDERkN8PZVhN6iM1bVZdWRi4L5H8wHyq-G87aLD2GtNDUbAhORgtE1fXyuyzWH";
+    response = await dio.post('https://fcm.googleapis.com/fcm/send',
+        data: {
+      "registration_ids": tokenList,
+          "notification": {
+          "title": title,
+          "body": body
+        }
+    });
+
+    return response.statusCode;
   }
 
 

@@ -1,6 +1,10 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:i_clean/providers/app_provider.dart';
+import 'package:i_clean/service/notification_helper.dart';
 import 'package:i_clean/ui/attendant_screen.dart';
 import 'package:i_clean/ui/dash_board.dart';
 import 'package:i_clean/ui/history_screen.dart';
@@ -21,7 +25,13 @@ import 'package:i_clean/ui/wo_entry_screen.dart';
 import 'package:i_clean/utils/const.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await NotificationHelper.initialize(flutterLocalNotificationsPlugin);
+  await Firebase.initializeApp(
+  );
+  await FirebaseMessaging.instance.getInitialMessage();
   runApp(const MyApp());
 }
 

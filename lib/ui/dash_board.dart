@@ -337,7 +337,7 @@ class _StateDashBoard extends State<DashBoard> {
                                                   showSnackBar(context);
                                                 }
                                               }else if(model.dashBoardList[index].id == 5){
-                                                if(isAdmin){
+                                                if(isAdmin ){
                                                   Navigator.pushNamed(context, MiniBarCoScreen.routeName).then((value) =>     Provider.of<AppProvider>(context, listen:false).getDashBoardData(context));
                                                 }else{
                                                   showSnackBar(context);

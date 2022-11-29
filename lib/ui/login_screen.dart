@@ -21,6 +21,12 @@ class _StateLoginScreen extends State<LoginScreen> {
   final myController = TextEditingController(text: "Chancellor");
 
   @override
+  void initState() {
+    // TODO: implement initState
+    Provider.of<AppProvider>(context , listen: false).requestPermission();
+    super.initState();
+  }
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
