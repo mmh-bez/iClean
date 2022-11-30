@@ -22,8 +22,6 @@ class NotificationHelper{
     });
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async{
-      print('------onMessage----');
-      print("onMessage: ${message.notification.title}");
 
       AndroidNotificationDetails androidNotificationDetails = AndroidNotificationDetails(
           'iClean', "iClean" , importance: Importance.max , priority: Priority.max , playSound: true);
