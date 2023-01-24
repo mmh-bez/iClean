@@ -111,9 +111,9 @@ class AppProvider extends BaseProvider{
   List<StaffList> staffList =[];
   List<GetRoomStatuss> superVisorRoomList = [];
 
-  void login(BuildContext context , String pin) async{
+  void login(BuildContext context , String id , String pin) async{
     showLoaderDialog(context);
-    LoginModel loginModel = await ApiService.login(context , pin);
+    LoginModel loginModel = await ApiService.login(context ,id ,  pin);
     if( loginModel.success){
       Navigator.pop(context);
       token = loginModel.result.accessToken;

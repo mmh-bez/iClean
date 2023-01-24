@@ -359,7 +359,6 @@ class _AttendantScreenState extends State<AttendantScreen> {
       child: Row(
         children: [
           Container(
-            width:110,
             child: ElevatedButton.icon(onPressed: (){
               showAlertDialogTwo(context,'Are you going to start houskeeping in Room'
                   '${model.attendantList[index].unit}', model.attendantList[index].hmmNotes, (){
@@ -378,7 +377,6 @@ class _AttendantScreenState extends State<AttendantScreen> {
             width: 4,
           ),
           Container(
-            width:110,
             child: ElevatedButton.icon(onPressed: (){
               clickHistory(model , index);
 

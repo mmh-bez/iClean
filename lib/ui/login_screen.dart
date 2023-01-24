@@ -48,7 +48,6 @@ class _StateLoginScreen extends State<LoginScreen> {
                     height : 50 ,
                     child: TextField(
                       controller: myController,
-                      readOnly: true,
                       textAlign: TextAlign.left ,
                       decoration: InputDecoration(
                           focusedBorder: OutlineInputBorder(
@@ -128,7 +127,7 @@ class _StateLoginScreen extends State<LoginScreen> {
                           color: Colors.white,
                         ),
                         onPressed: (){
-                          Provider.of<AppProvider>(context , listen:false).login(context , _pinController.text );
+                          Provider.of<AppProvider>(context , listen:false).login(context ,myController.text, _pinController.text );
                         },
                         label: Text(
                           "Login to iClean",

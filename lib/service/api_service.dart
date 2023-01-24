@@ -32,7 +32,7 @@ import 'package:i_clean/utils/const.dart';
 class ApiService{
   static Response response;
 
-  static Future<LoginModel> login(BuildContext context , String pin)async{
+  static Future<LoginModel> login(BuildContext context , String id , String pin)async{
     var _api = await ApiUtil.connectNoAuth(context);
     response = await _api.post('/TokenAuth/AuthenticatePINMobile' , data: {
       "userNameOrEmailAddress": pin,
@@ -43,7 +43,7 @@ class ApiService{
       "singleSignIn": true,
       "returnUrl": "string",
       "captchaResponse": "string",
-      "tenantName": "Chancellor"
+      "tenantName": id
     });
 
     return loginModelFromJson(response.data);
