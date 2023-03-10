@@ -42,7 +42,7 @@ class SelectedItemModel {
 
 class ItemSelected {
   ItemSelected({
-    this.no,
+
     this.itemKey,
     this.description,
     this.qty,
@@ -50,7 +50,6 @@ class ItemSelected {
     this.postCodeKey,
   });
 
-  int no;
   String itemKey;
   String description;
   int qty;
@@ -58,7 +57,7 @@ class ItemSelected {
   String postCodeKey;
 
   factory ItemSelected.fromJson(Map<String, dynamic> json) => ItemSelected(
-    no: json["no"] == null ? null : json["no"],
+
     itemKey: json["itemKey"] == null ? null : json["itemKey"],
     description: json["description"] == null ? null : json["description"],
     qty: json["qty"] == null ? null : json["qty"],
@@ -67,7 +66,7 @@ class ItemSelected {
   );
 
   Map<String, dynamic> toJson() => {
-    "no": no == null ? null : no,
+
     "itemKey": itemKey == null ? null : itemKey,
     "description": description == null ? null : description,
     "qty": qty == null ? null : qty,

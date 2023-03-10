@@ -157,8 +157,8 @@ class _RoomScreenState extends State<RoomScreen> {
                   },
                   child: Container(
                     width: 80,
-                    color: guestSelectedIndex == index ? Colors.black12 :Colors.white,
-                    child: Center(child: Text(model.guestStatusList[index].status , style: TextStyle(fontWeight: FontWeight.bold),)),
+                    color: guestSelectedIndex == index ? Colors.blueGrey : Color(0xFFd3a458),
+                    child: Center(child: Text(model.guestStatusList[index].status , style: TextStyle(fontWeight: FontWeight.bold , color: guestSelectedIndex == index ? Colors.white : Colors.black54),)),
                   ),
                 );
               },
@@ -178,7 +178,7 @@ class _RoomScreenState extends State<RoomScreen> {
             :GridView.builder(
             gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                 maxCrossAxisExtent: 300,
-                childAspectRatio: 1.5,
+                childAspectRatio:1.4,
                 crossAxisSpacing: 1,
                 mainAxisSpacing: 4),
             itemCount: model.roomGridList.length,
@@ -186,7 +186,7 @@ class _RoomScreenState extends State<RoomScreen> {
               return Padding(
                 padding: EdgeInsets.only(left: 4 ,right: 4 ,top: 2),
                 child: Container(
-                  height: 150,
+                  height: 160,
                   child: Card(
                     elevation: 2,
                     child: Container(
@@ -197,6 +197,7 @@ class _RoomScreenState extends State<RoomScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
+                              width: 150,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -209,7 +210,7 @@ class _RoomScreenState extends State<RoomScreen> {
                                   Visibility(
                                       visible: false,
                                       child: Text("")) :
-                                  Text(model.roomGridList[index].guestDes),
+                                  Text(model.roomGridList[index].guestDes , maxLines: 2,),
                                   model.roomGridList[index].maidDes == null ?
                                   IconButton(onPressed: (){
                                     showAssignPopup(context ,  model.roomGridList[index].unit);
@@ -220,22 +221,24 @@ class _RoomScreenState extends State<RoomScreen> {
                                 ],
                               ),
                             ),
-                            Visibility(
-                              visible: model.roomGridList[index].dndStatus == '-' ? false : true,
-                              child: Container(
-                                child: FlutterSwitch(
-                                  value: model.roomGridList[index].dndStatus == 'Disable' ? true : false,
-                                activeColor: Color.fromRGBO(255, 51, 75, 1.0),
-                                inactiveColor: Colors.blue,
-                                onToggle: (value){
-                                  showAlertDialogTwo(context, 'Confirm', 'Confirm update "Do Not Distrub status for Room#${model.roomGridList[index].unit}', (){
-                                    Navigator.pop(context);
-                                    Provider.of<AppProvider>(context , listen: false).clickDnd(context , model.roomGridList[index].dndStatus.toLowerCase()
-                                        , model.roomGridList[index].unit ,'room');
-                                  });
-                                },
-                              ),
+                            Expanded(
+                              child: Visibility(
+                                visible: model.roomGridList[index].dndStatus == '-' ? false : true,
+                                child: Container(
+                                  child: FlutterSwitch(
+                                    value: model.roomGridList[index].dndStatus == 'Disable' ? true : false,
+                                  activeColor: Color.fromRGBO(255, 51, 75, 1.0),
+                                  inactiveColor: Colors.blue,
+                                  onToggle: (value){
+                                    showAlertDialogTwo(context, 'Confirm', 'Confirm update "Do Not disturb status for Room#${model.roomGridList[index].unit}', (){
+                                      Navigator.pop(context);
+                                      Provider.of<AppProvider>(context , listen: false).clickDnd(context , model.roomGridList[index].dndStatus.toLowerCase()
+                                          , model.roomGridList[index].unit ,'room');
+                                    });
+                                  },
+                                ),
                     ),
+                              ),
                             ),
 
 
@@ -261,7 +264,7 @@ class _RoomScreenState extends State<RoomScreen> {
           builder: (BuildContext context , StateSetter setState){
             return Consumer<AppProvider>(
               builder: (context , data , _){
-                return  AlertDialog(
+                return data.mRoomPopupItem == null ? CircularProgressIndicator() : AlertDialog(
       title:  Text.rich(
                 TextSpan(
                 children: [

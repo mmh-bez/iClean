@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:i_clean/utils/screen_size.dart';
 
 typedef KeyboardTapCallback = void Function(String text);
 
@@ -46,6 +47,7 @@ class _NumericKeyboardState extends State<NumericKeyboard> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     return  Container(
+
         alignment: Alignment.center,
         child: Column(
           mainAxisAlignment:  MainAxisAlignment.start,
@@ -81,32 +83,46 @@ class _NumericKeyboardState extends State<NumericKeyboard> {
                 Expanded(
                   child: InkWell(
                       onTap: widget.leftButtonFn,
-                      child: Container(
-                        color: Colors.white,
-                        alignment: Alignment.center,
-                        width: 100,
-                        height: 60,
-                        child: Text(
-                          "Clear",
-                          style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.w300,
-                              color: Colors.black),
-                        ),)),
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 10 , right: 10 , top: 4  , bottom: 4 ),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+
+                          alignment: Alignment.center,
+                          width: 100,
+                          height: 60,
+                          child: Text(
+                            "Clear",
+                            style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w300,
+                                color: Colors.black),
+                          ),),
+                      )),
                 ),
                 _calcButton('0'),
                 Expanded(
                   child: InkWell(
                     splashColor: Colors.orange,
                       onTap: widget.rightButtonFn,
-                      child: Container(
-                          color: Colors.white,
-                          alignment: Alignment.center,
-                          width: 100,
-                          height: 60,
-                          child: Padding(
-                              padding: EdgeInsets.only(left: 14),
-                              child: widget.rightIcon))),
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 10 , right: 10 , top: 4  , bottom: 4 ),
+                        child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+
+                            alignment: Alignment.center,
+                            width: 100,
+                            height: 60,
+                            child: Padding(
+                                padding: EdgeInsets.only(left: 14),
+                                child: widget.rightIcon)),
+                      )),
                 )
               ],
             ),
@@ -123,9 +139,13 @@ class _NumericKeyboardState extends State<NumericKeyboard> {
             widget.onKeyboardTap(value);
           },
           child: Padding(
-            padding: EdgeInsets.only(left: 1 , top: 1 ),
+            padding: EdgeInsets.only(left: 10 , right: 10 , top: 4  , bottom: 4 ),
             child: Container(
-              color: Colors.blueGrey,
+    decoration: BoxDecoration(
+      color: Colors.blueGrey,
+    borderRadius: BorderRadius.circular(20),
+    ),
+
               alignment: Alignment.center,
               width: double.infinity,
               height: 60,

@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:i_clean/models/lost_found/LostAndFoundDataModel.dart';
 import 'package:i_clean/providers/app_provider.dart';
+import 'package:i_clean/providers/view_state.dart';
 import 'package:provider/provider.dart';
 
 import '../../utils/const.dart';
@@ -31,8 +32,8 @@ class _AddLostFoundScreenState extends State<AddLostFoundScreen> {
   var instructionController = TextEditingController();
   var infoController = TextEditingController();
 
-
-
+  String _itemError = null;
+  String _areaError = '';
   LFItemStatus _lfItemStatus;
   String selectedItemKey;
   String selectedItemStatus;
@@ -71,7 +72,7 @@ class _AddLostFoundScreenState extends State<AddLostFoundScreen> {
       ),
       body: Consumer<AppProvider>(
        builder: (context , model ,_){
-         return  Padding(
+         return  model.state == ViewState.Busy ? Center(child: CircularProgressIndicator()) :Padding(
              padding: EdgeInsets.only(top: 12 , left: 4 , right: 4),
              child: Container(
                child: SingleChildScrollView(
@@ -127,7 +128,26 @@ class _AddLostFoundScreenState extends State<AddLostFoundScreen> {
                              width:100,
                              child: Text('Item')),
                          Expanded(
-                             child: TextFieldUtil(itemController, 'Please Enter Item No')
+                             child: TextField(
+                               maxLines: null,
+                               controller: itemController,
+                               onChanged: (value){
+                                 setState(() {
+                                   _itemError =null;
+                                 });
+                               },
+                               decoration: InputDecoration(
+                                   hintText: "Please enter item no",
+                                   errorText: _itemError,
+                                   enabledBorder: OutlineInputBorder(
+                                     borderSide: const BorderSide(width: 1, color: Colors.blue),
+                                     borderRadius: BorderRadius.circular(15),
+                                   ),
+                                   focusedBorder: OutlineInputBorder(
+                                     borderSide: const BorderSide(width: 1, color: Colors.orangeAccent),
+                                     borderRadius: BorderRadius.circular(15),
+                                   )),
+                             )
                          ),
                        ],
                      ),
@@ -146,7 +166,7 @@ class _AddLostFoundScreenState extends State<AddLostFoundScreen> {
                                child: DropdownButton(
                                  isExpanded: true,
                                  value: _lfItemStatus,
-                                 hint: Text('Select'),
+                                 hint: Text(model.lfItemList.first.lostFoundStatus),
                                  items: model.lfItemList.map((item){
                                    return DropdownMenuItem(
                                      child: Text(item.lostFoundStatus), //label of item
@@ -375,12 +395,20 @@ class _AddLostFoundScreenState extends State<AddLostFoundScreen> {
                      spaceUtil(),
                      ElevatedButton(
                        onPressed: () {
-                         Provider.of<AppProvider>(context, listen: false).createLostAndFound(context,
-                             selectedItemKey, formattedDate , selectedItemStatus , selectedAreaNo , ownerController.text ,
-                             ownerFolioController.text,
-                         selectedOwnerRoomKey , ownerContactController.text , founderController.text ,
-                             founderFolioController.text , selectedFounderRoomKey , founderContactController.text , descController.text,
-                         instructionController.text, infoController.text, refController.text );
+                         if(itemController.text == ''){
+                           setState(() {
+                             _itemError = 'Required';
+                           });
+
+                         }else{
+                           Provider.of<AppProvider>(context, listen: false).createLostAndFound(context,
+                               selectedItemKey ?? model.lfItemList.first.lostFoundStatusKey, formattedDate , selectedItemStatus ?? model.lfItemList.first.lostFoundStatus , selectedAreaNo , ownerController.text ,
+                               ownerFolioController.text,
+                               selectedOwnerRoomKey , ownerContactController.text , founderController.text ,
+                               founderFolioController.text , selectedFounderRoomKey , founderContactController.text , descController.text,
+                               instructionController.text, infoController.text, refController.text );
+                         }
+
                        },
                        style: ElevatedButton.styleFrom(
                          primary: Colors.blue, // Background color

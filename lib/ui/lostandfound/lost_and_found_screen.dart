@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:i_clean/providers/app_provider.dart';
+import 'package:i_clean/providers/view_state.dart';
 import 'package:i_clean/ui/lostandfound/add_lost_found.dart';
 import 'package:i_clean/ui/lostandfound/edit_lost_found.dart';
 import 'package:i_clean/utils/const.dart';
@@ -42,7 +43,7 @@ class _LostAndFoundScreenState extends State<LostAndFoundScreen> {
       body: Consumer<AppProvider>(
         builder: (context, model , _){
           return Container(
-              child: ListView.builder(
+              child: model.state == ViewState.Busy ? Center(child: CircularProgressIndicator()) : ListView.builder(
                 shrinkWrap: true,
                   itemCount: model.lostAndFoundItemList.length,
                   itemBuilder: (context, index) {
@@ -77,7 +78,7 @@ class _LostAndFoundScreenState extends State<LostAndFoundScreen> {
                                   Padding(
                                     padding: EdgeInsets.only(left: 12 , right: 12),
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
                                         Container(
                                             width: 100,
@@ -86,7 +87,6 @@ class _LostAndFoundScreenState extends State<LostAndFoundScreen> {
                                             width: 20,
                                             child: Text(':')),
                                         Container(
-                                            width: 200,
                                             child: Text(''+model.lostAndFoundItemList[index].itemName,style: TextStyle(fontWeight: FontWeight.bold))),
                                       ],
                                     ),
@@ -94,7 +94,7 @@ class _LostAndFoundScreenState extends State<LostAndFoundScreen> {
                                   Padding(
                                     padding: EdgeInsets.only(left: 12 , right: 12),
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
                                         Container(
                                             width: 100,
@@ -103,7 +103,6 @@ class _LostAndFoundScreenState extends State<LostAndFoundScreen> {
                                             width: 20,
                                             child: Text(':')),
                                         Container(
-                                            width: 200,
                                             child: Text(''+model.lostAndFoundItemList[index].lostFoundStatus,style: TextStyle(fontWeight: FontWeight.bold))),
                                       ],
                                     ),
@@ -111,7 +110,7 @@ class _LostAndFoundScreenState extends State<LostAndFoundScreen> {
                                   Padding(
                                     padding: EdgeInsets.only(left: 12 , right: 12),
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
                                         Container(
                                             width: 100,
@@ -120,7 +119,6 @@ class _LostAndFoundScreenState extends State<LostAndFoundScreen> {
                                             width: 20,
                                             child: Text(':')),
                                         Container(
-                                            width: 200,
                                             child: Text(''+model.lostAndFoundItemList[index].mArea,style: TextStyle(fontWeight: FontWeight.bold))),
                                       ],
                                     ),
@@ -128,7 +126,7 @@ class _LostAndFoundScreenState extends State<LostAndFoundScreen> {
                                   Padding(
                                     padding: EdgeInsets.only(left: 12 , right: 12),
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
                                         Container(
                                             width: 100,
@@ -137,7 +135,6 @@ class _LostAndFoundScreenState extends State<LostAndFoundScreen> {
                                             width: 20,
                                             child: Text(':')),
                                         Container(
-                                            width: 200,
                                             child: Text(''+model.lostAndFoundItemList[index].owner,style: TextStyle(fontWeight: FontWeight.bold))),
                                       ],
                                     ),
@@ -145,7 +142,7 @@ class _LostAndFoundScreenState extends State<LostAndFoundScreen> {
                                   Padding(
                                     padding: EdgeInsets.only(left: 12 , right: 12),
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
                                         Container(
                                             width: 100,
@@ -154,7 +151,7 @@ class _LostAndFoundScreenState extends State<LostAndFoundScreen> {
                                             width: 20,
                                             child: Text(':')),
                                         Container(
-                                            width: 200,
+
                                             child: Text(''+model.lostAndFoundItemList[index].founder,style: TextStyle(fontWeight: FontWeight.bold))),
                                       ],
                                     ),
@@ -162,7 +159,7 @@ class _LostAndFoundScreenState extends State<LostAndFoundScreen> {
                                   Padding(
                                     padding: EdgeInsets.only(left: 12 , right: 12),
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
                                         Container(
                                             width: 100,
@@ -171,7 +168,7 @@ class _LostAndFoundScreenState extends State<LostAndFoundScreen> {
                                             width: 20,
                                             child: Text(':')),
                                         Container(
-                                            width: 200,
+
                                             child: Text(''+model.lostAndFoundItemList[index].additionalInfo,style: TextStyle(fontWeight: FontWeight.bold))),
                                       ],
                                     ),

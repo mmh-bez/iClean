@@ -20,14 +20,14 @@ class _WoEntryScreenState extends State<WoEntryScreen> {
   var noteController = TextEditingController();
   var descController = TextEditingController();
   var dateController = TextEditingController();
-
+   String _errorText = null;
   GetReportedBy reportedBy;
   Area area;
   Room room;
   WorkType workType;
 
   String selectedReportedBy;
-  String staffKey;
+  String selectedStaffKey;
   String selectedArea;
   String selectedRoom;
   String selectedWorkType;
@@ -42,6 +42,8 @@ class _WoEntryScreenState extends State<WoEntryScreen> {
   @override
   void initState() {
     // TODO: implement initState
+    selectedReportedBy = name;
+    selectedStaffKey = staffKey;
     dateController.text = formatDate(selectedDate);
     formattedDate = convertDate(selectedDate);
     Provider.of<AppProvider>(context , listen: false ).getWoEntryData(context);
@@ -76,7 +78,7 @@ class _WoEntryScreenState extends State<WoEntryScreen> {
                             child: DropdownButton(
                               isExpanded: true,
                               value: reportedBy,
-                              hint: Text('--Select--'),
+                              hint: Text(selectedReportedBy),
                               items: model.reportedByList.map((item){
                                 return DropdownMenuItem(
                                   child: Text(item.userName), //label of item
@@ -87,7 +89,7 @@ class _WoEntryScreenState extends State<WoEntryScreen> {
                                 setState(() {
                                   reportedBy = value;
                                   selectedReportedBy = value.userName;
-                                  staffKey = value.staffKey;
+                                  selectedStaffKey = value.staffKey;
                                 });
                                 //change the country name//get city list.
                               },
@@ -238,9 +240,11 @@ class _WoEntryScreenState extends State<WoEntryScreen> {
                             child: Text('Work Description')),
                         Expanded(
                           child: TextField(
+                            maxLines: 5,
                             controller: descController,
                             decoration: InputDecoration(
                                 labelText: 'Please enter work description',
+                                errorText: _errorText,
                                 enabledBorder: OutlineInputBorder(
                                   borderSide: const BorderSide(width: 3, color: Colors.blue),
                                   borderRadius: BorderRadius.circular(15),
@@ -249,6 +253,7 @@ class _WoEntryScreenState extends State<WoEntryScreen> {
                                   borderSide: const BorderSide(width: 3, color: Colors.orangeAccent),
                                   borderRadius: BorderRadius.circular(15),
                                 )),
+                            onChanged: (text) => setState(() => _errorText = null),
                           ),
                         ),
                       ],
@@ -262,9 +267,11 @@ class _WoEntryScreenState extends State<WoEntryScreen> {
                             child: Text('Notes')),
                         Expanded(
                           child: TextField(
+                            maxLines: 5,
                             controller: noteController,
                             decoration: InputDecoration(
                                 labelText: 'Notes',
+
                                 enabledBorder: OutlineInputBorder(
                                   borderSide: const BorderSide(width: 3, color: Colors.blue),
                                   borderRadius: BorderRadius.circular(15),
@@ -282,10 +289,20 @@ class _WoEntryScreenState extends State<WoEntryScreen> {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        Provider.of<AppProvider>(context , listen: false).addWorkOrder(context , formattedDate , selectedArea,
-                          selectedWorkType , descController.text , noteController.text ,selectedRoom , selectedRoomKey ,
-                          selectedAreaKey , selectedWorkTypeKey , staffKey , mode , selectedReportedBy
-                        );
+                        if(descController.text.isEmpty){
+                          setState(() {
+                            _errorText = 'required';
+                          });
+                        }else{
+                          setState(() {
+                            _errorText = '';
+                          });
+                          Provider.of<AppProvider>(context , listen: false).addWorkOrder(context , formattedDate , selectedArea,
+                              selectedWorkType , descController.text , noteController.text ,selectedRoom , selectedRoomKey ,
+                              selectedAreaKey , selectedWorkTypeKey , selectedStaffKey , mode , selectedReportedBy
+                          );
+                        }
+
                       },
                       style: ElevatedButton.styleFrom(
                         primary: Colors.blue, // Background color

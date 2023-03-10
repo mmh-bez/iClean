@@ -41,16 +41,21 @@ class _LaundryItemScreenState extends State<LaundryItemScreen> {
     return Consumer<AppProvider>(
         builder: (context , model , _){
           return Scaffold(
-              floatingActionButton: FloatingActionButton(
-                elevation: 4,
-                child: Icon(Icons.add_box),
-                onPressed: (){
-                  _showModelBottomSheet(model.laundryItemModelList.first , context);
-                },
-              ),
+
               appBar: AppBar(
                 centerTitle: true,
                 title: Text('Laundry Item'),
+                actions: [
+                  Padding(
+                    padding: EdgeInsets.only(right: 12 , top: 4),
+                    child: IconButton(
+                        icon: Icon(
+                          Icons.add_box,
+                        ),
+                        onPressed: () => _showModelBottomSheet(model.laundryItemModelList.first , context),
+                    ),
+                  )
+                ],
               ),
               body: model.state == ViewState.Busy ? Center(child: CircularProgressIndicator()): Container(
                 width: double.maxFinite,
@@ -60,7 +65,7 @@ class _LaundryItemScreenState extends State<LaundryItemScreen> {
                     Container(
                       color: Colors.white54,
                       width: double.infinity,
-                      height: 120,
+                      height: 140,
                       child: Padding(
                         padding: EdgeInsets.only(left: 4 , right: 4 , bottom: 2),
                         child: Card(
@@ -69,6 +74,7 @@ class _LaundryItemScreenState extends State<LaundryItemScreen> {
                             padding: EdgeInsets.only(left: 8 , right: 8, top: 6 , bottom: 4),
                             child: Container(
                               child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: [
                                   Container(
                                     width: double.infinity,
@@ -139,7 +145,7 @@ class _LaundryItemScreenState extends State<LaundryItemScreen> {
                                   ),
                                   Container(
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
                                         Container(
                                           width: 105,
@@ -147,7 +153,7 @@ class _LaundryItemScreenState extends State<LaundryItemScreen> {
                                         ),
                                         Container(
                                           width: 20,
-                                          child: Text(':'),
+                                          child: Text(':' , style: TextStyle(fontWeight: FontWeight.bold),),
                                         ),
                                         Container(
                                           width: 400,
@@ -158,7 +164,7 @@ class _LaundryItemScreenState extends State<LaundryItemScreen> {
                                   ),
                                   Container(
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
                                         Container(
                                           width: 100,
@@ -167,6 +173,9 @@ class _LaundryItemScreenState extends State<LaundryItemScreen> {
                                         Container(
                                           width: 20,
                                           child: Image.asset('assets/images/in.png'),
+                                        ),
+                                        SizedBox(
+                                          width: 8,
                                         ),
                                         Container(
                                           width: 400,
@@ -177,7 +186,7 @@ class _LaundryItemScreenState extends State<LaundryItemScreen> {
                                   ),
                                   Container(
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
                                         Container(
                                           width: 100,
@@ -186,6 +195,9 @@ class _LaundryItemScreenState extends State<LaundryItemScreen> {
                                         Container(
                                           width: 20,
                                           child: Image.asset('assets/images/out.png'),
+                                        ),
+                                        SizedBox(
+                                          width: 8,
                                         ),
                                         Container(
                                           width: 400,
@@ -312,65 +324,104 @@ class _LaundryItemScreenState extends State<LaundryItemScreen> {
 
   }
 
-  void _showModelBottomSheet(LaundryItemModel model , BuildContext context) async {
-
-     showModalBottomSheet<LaundryItem>(
+  void _showModelBottomSheet(LaundryItemModel laundryItem , BuildContext context) async {
+    Provider.of<AppProvider>(context , listen: false).updateLaundryItem(laundryItem.laundryItems  );
+    showModalBottomSheet<LaundryItem>(
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
       context: context,
       isScrollControlled: true,
       builder: (BuildContext context) {
-        return FractionallySizedBox(
-          heightFactor: 0.9,
-          child:  Container(
-            height: double.infinity,
-            padding: EdgeInsets.only(top: 16, left: 16, right: 16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
+        return Consumer<AppProvider>(
+          builder: (context , model , _ ){
+            return FractionallySizedBox(
+              heightFactor: 0.9,
+              child:  Container(
+                height: double.infinity,
+                padding: EdgeInsets.only(top: 16, left: 16, right: 16),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
                     Text('Laundry Items'),
 
-                Expanded(
-                  child: ListView.separated(
-                      separatorBuilder: (context, index) => Divider(
-                        color: Colors.black,
-                      ),
-                    itemCount: model.laundryItems.length,
-                      itemBuilder: (context , index){
-                      return GestureDetector(
-                        onTap: (){
-                          showCountDialog(model.laundryItems[index] , index+1);
-                        },
-                        child: Container(
-                          child: Text('${index+1}.   '+model.laundryItems[index].description),
+                    Expanded(
+                      child: ListView.separated(
+                          separatorBuilder: (context, index) => Divider(
+                            color: Colors.black,
+                          ),
+                          itemCount: model.tempItemSelectedList.length,
+                          itemBuilder: (context , index){
+                            return Container(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text('${index+1}.   '+model.tempItemSelectedList[index].description),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        IconButton(
+                                          icon: Icon(Icons.indeterminate_check_box_outlined),
+                                          onPressed: (){
+                                            Provider.of<AppProvider>(context , listen: false).updateItemQty(model.tempItemSelectedList[index] , index , 'decrease');
+
+
+                                          },
+                                        ) ,
+                                        Text('${context.watch<AppProvider>().tempItemSelectedList[index].qty}'),
+                                        IconButton(
+                                          icon: Icon(Icons.add_box_outlined),
+                                          onPressed: (){
+                                            // Provider.of<AppProvider>(context , listen: false).increase();
+                                            Provider.of<AppProvider>(context , listen: false).updateItemQty(model.tempItemSelectedList[index] , index , 'increase');
+                                          },
+                                        ) ,
+
+                                      ],
+                                    ),
+                                  ],
+                                )
+
+
+
+                            );
+                          }),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+
+                      children: [
+                        TextButton(
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.green,
+                              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),),
+                            onPressed: (){
+                              Provider.of<AppProvider>(context , listen: false).postSelectedItems(context ,'LaundryRoom' ,widget.roomNo , laundryItem.roomKey , laundryItem.reservationKey  , voucherController.text);
+                            }, child: Text('Post Items' , style: TextStyle(color: Colors.white),)),
+                        SizedBox(
+                          width: 12,
                         ),
-                      );
-                      }),
+                        TextButton(
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.blue,
+                              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),),
+                            onPressed: (){
+                              Navigator.pop(context);
+
+                            }, child: Text('Cancel' , style: TextStyle(color: Colors.white),))
+                      ],
+                    )
+                  ],
                 ),
-                TextButton(
-                    style: ElevatedButton.styleFrom(
-                        primary: Colors.blue,
-                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),),
-                    onPressed: (){
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => AddSelectedItemScreen(roomNo: widget.roomNo,type: 'LaundryRoom', voucherNo: voucherController.text,
-                            reservationKey: model.reservationKey, roomKey: model.roomKey,
-                            ),
-                        ),
-                      );
-                    }, child: Text('View Selected Item' , style: TextStyle(color: Colors.white),))
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         );
       },
     );
   }
 
   void showCountDialog(LaundryItem laundryItem , int index) {
-    Provider.of<AppProvider>(context , listen: false).getInitialQty(ItemSelected(itemKey: laundryItem.itemKey));
+
     showDialog(barrierDismissible: true,
       context:context,
       builder:(BuildContext context){
@@ -406,7 +457,7 @@ class _LaundryItemScreenState extends State<LaundryItemScreen> {
             ElevatedButton(
 
                 onPressed: (){
-                  Provider.of<AppProvider>(context , listen: false).addLaundryItem(laundryItem , index);
+
                   Navigator.pop(context);
                 }, child: Text('OK') ,
             ),

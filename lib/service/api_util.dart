@@ -24,8 +24,6 @@ class ApiUtil {
     apiWithNoAuth.options.connectTimeout = 20000; //20s
     apiWithNoAuth.options.receiveTimeout = 10000; //10s
 
-    apiWithNoAuth.interceptors.add(LogInterceptor(requestHeader: true));
-    apiWithNoAuth.interceptors.add(LogInterceptor(request: true));
     apiWithNoAuth.interceptors.add(LogInterceptor(requestBody: true));
     apiWithNoAuth.interceptors.add(LogInterceptor(responseBody: true));
     apiWithNoAuth.options.responseType = ResponseType.plain;
@@ -65,9 +63,6 @@ class ApiUtil {
     apiWithAuth.options.connectTimeout = 20000; //20s
     apiWithAuth.options.receiveTimeout = 10000; //10s
 
-    apiWithAuth.interceptors.add(LogInterceptor(requestHeader: true));
-    apiWithAuth.interceptors.add(LogInterceptor(requestHeader: true));
-    apiWithAuth.interceptors.add(LogInterceptor(request: true));
     apiWithAuth.interceptors.add(LogInterceptor(requestBody: true));
     apiWithAuth.interceptors.add(LogInterceptor(responseBody: true));
     apiWithAuth.options.responseType = ResponseType.plain;

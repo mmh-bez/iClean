@@ -100,7 +100,9 @@ class _AttendantScreenState extends State<AttendantScreen> {
           ),
           SizedBox(
             height: 6,
-          ),  Container(
+          ),
+
+          Container(
             height: 50,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
@@ -120,7 +122,7 @@ class _AttendantScreenState extends State<AttendantScreen> {
                   },
                   child: Container(
                     width: 80,
-                    color: roomSelectedIndex == index   ? Colors.black12
+                    color: roomSelectedIndex == index   ? Colors.blueGrey
                         : model.roomList[index].roomStatus == 'Vacant' ? Color(0xFF5cb85c)
                         :model.roomList[index].roomStatus == 'Out Of Order' ? Color(0xFF5bc0de)
                         :model.roomList[index].roomStatus == 'Occupied' ? Color(0xFFFFc0cb)
@@ -135,7 +137,11 @@ class _AttendantScreenState extends State<AttendantScreen> {
           ),
           SizedBox(
             height: 6,
-          ),  Container(
+          ),
+          model.maidStatusList.isEmpty ? Visibility(
+              visible: false,
+              child: Container()):
+          Container(
             height: 50,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
@@ -156,7 +162,7 @@ class _AttendantScreenState extends State<AttendantScreen> {
                   child: Container(
                     width: 100,
                     color: maidSelectedIndex == index ? Colors.blue :Colors.orange,
-                    child: Center(child: Text(model.maidStatusList[index].maidStatus , style: TextStyle(fontWeight: FontWeight.bold),)),
+                    child: Center(child: Text('${model.maidStatusList[index].maidStatus } :${model.maidStatusList[index].roomCount}' , style: TextStyle(fontWeight: FontWeight.bold),)),
                   ),
                 );
               },
@@ -164,7 +170,8 @@ class _AttendantScreenState extends State<AttendantScreen> {
           ),
           SizedBox(
             height: 6,
-          ),  Container(
+          ),
+          Container(
             height: 50,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
@@ -184,8 +191,8 @@ class _AttendantScreenState extends State<AttendantScreen> {
                   },
                   child: Container(
                     width: 80,
-                    color: guestSelectedIndex == index ? Colors.black12 :Colors.white,
-                    child: Center(child: Text(model.guestStatusList[index].status , style: TextStyle(fontWeight: FontWeight.bold),)),
+                    color: guestSelectedIndex == index ? Colors.blueGrey :Colors.tealAccent,
+                    child: Center(child: Text(model.guestStatusList[index].status , style: TextStyle(fontWeight: FontWeight.bold , color: guestSelectedIndex == index ? Colors.white : Colors.black54),)),
                   ),
                 );
               },
@@ -252,7 +259,7 @@ class _AttendantScreenState extends State<AttendantScreen> {
                                            activeColor: Color.fromRGBO(255, 51, 75, 1.0),
                                            inactiveColor: Colors.blue,
                                            onToggle: (value){
-                                             showAlertDialogTwo(context, 'Confirm', 'Confirm update "Do Not Distrub status for Room#${model.attendantList[index].unit}', (){
+                                             showAlertDialogTwo(context, 'Confirm', 'Confirm update "Do Not disturb status for Room#${model.attendantList[index].unit}', (){
                                                Navigator.pop(context);
                                                Provider.of<AppProvider>(context , listen: false).clickDnd(context , model.attendantList[index].getRoomDndButton.toLowerCase()
                                                    , model.attendantList[index].unit ,'attend');
@@ -293,7 +300,10 @@ class _AttendantScreenState extends State<AttendantScreen> {
         builder: (context){
       return Consumer<AppProvider>(
         builder: (context , model , _){
-          return model.state == ViewState.Busy ? Center(child: CircularProgressIndicator()):ListView.builder(
+          return model.state == ViewState.Busy ? Center(child: CircularProgressIndicator()) :
+              model.historyLogItemList.isEmpty ?
+          Center(child: Text('There is no history.'),) :
+          ListView.builder(
               itemCount: model.historyLogItemList.length,
               itemBuilder: (context , index){
                 return Padding(
@@ -488,8 +498,9 @@ class _AttendantScreenState extends State<AttendantScreen> {
                       children: [
                         Expanded(
                           child: Container(
-                          
-                            child: model.state == ViewState.Busy ? Center(child: CircularProgressIndicator()) : ListView.builder(
+                            child: model.state == ViewState.Busy ? Center(child: CircularProgressIndicator()) :
+                            model.checkItemList.first.attendantCheckList.isEmpty ? Center(child: Text('No records to display.'),) :
+                            ListView.builder(
                                 itemCount: data.checkItemList.first.attendantCheckList.length,
                                 itemBuilder: (context , index){
                                   return Padding(

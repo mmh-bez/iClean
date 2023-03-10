@@ -3,16 +3,20 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 //const baseApi = "https://test.bezcloud.app/api";
-const baseApi = "https://iclean.bezcloud.app/api";
+//final hcoApi = "https://iclean.bezcloud.app/api";
+final hcoApi = "https://icleanhco.ghihotels.com/api";
+final hgcApi = 'https://test.bezcloud.app/api';
+String baseApi;
 GlobalKey<NavigatorState> nav = GlobalKey<NavigatorState>();
 String token ;
 String staffKey;
 String name;
 bool isAdmin = false;
 String serverKey = "AAAAKyWo4oc:APA91bHqkfMO1M_t_thtJuwpuSKN8qadqR4Eqy5mOKFCLw3exIWjSYXHLuPZ3zuvS5pgFKfVmmlzmUSDERkN8PZVhN6iM1bVZdWRi4L5H8wHyq-G87aLD2GtNDUbAhORgtE1fXyuyzWH";
+bool isDarkModeEnabled = false;
 
 String formatDate(DateTime dt){
-  return (DateFormat('d/MMM').format(dt));
+  return (DateFormat('dd/MM/yyyy').format(dt));
 }
 
 String convertDate(DateTime dt){

@@ -11,6 +11,7 @@ import 'package:i_clean/ui/minibar/minibar_screen.dart';
 import 'package:i_clean/ui/minibar_co/minibar_co_screen.dart';
 import 'package:i_clean/ui/room/room_screen.dart';
 import 'package:i_clean/ui/supervisor/supervisor_screen.dart';
+import 'package:i_clean/ui/supervisor_mode/super_visor_mode.dart';
 import 'package:i_clean/ui/view_logs_screen.dart';
 import 'package:i_clean/ui/wo_entry_screen.dart';
 import 'package:i_clean/utils/const.dart';
@@ -61,21 +62,23 @@ class _StateDashBoard extends State<DashBoard> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-        body: Consumer<AppProvider>(
-          builder: (context , model , _){
-            return SmartRefresher(
-              enablePullDown: true,
-              enablePullUp: true,
-              header: WaterDropHeader(),
-              controller: _refreshController,
-              onRefresh: _onRefresh,
-              onLoading: _onLoading,
-              child: Container(
-                width: double.maxFinite,
-                height: double.maxFinite,
-                child: Column(
-                  children: [
-                    Container(
+        body: OrientationBuilder(
+          builder: (context, orientation){
+            return Consumer<AppProvider>(
+              builder: (context , model , _){
+                return SmartRefresher(
+                  enablePullDown: true,
+                  enablePullUp: true,
+                  header: WaterDropHeader(),
+                  controller: _refreshController,
+                  onRefresh: _onRefresh,
+                  onLoading: _onLoading,
+                  child: Container(
+                    width: double.maxFinite,
+                    height: double.maxFinite,
+                    child: Column(
+                      children: [
+                        Container(
                           color: Colors.white54,
                           width: double.infinity,
                           height: 280,
@@ -91,39 +94,39 @@ class _StateDashBoard extends State<DashBoard> {
                                       child: Container(
                                         height: 100,
                                         child:  ListTile(
-                                          leading: CircleAvatar(
-                                            radius: 20,
-                                            child: Image.asset('assets/images/human.png'),
-                                          ),
-                                          title: Text(
-                                            'Hi',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold, fontSize: 18),
-                                          ),
-                                          subtitle: Text(name),
-                                          trailing: Container(
-                                            width: 60,
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              children: [
-                                                Expanded(
-                                                  child: IconButton(
-                                                    icon: Icon(Icons.history ,),
-                                                    onPressed: () {
-                                                      Navigator.pushNamed(context, HistoryScreen.routeName).then((value) =>     Provider.of<AppProvider>(context, listen:false).getDashBoardData(context));
-                                                    },),
-                                                ),
-                                                Expanded(
-                                                  child: IconButton(
-                                                    icon: Icon(Icons.logout),
-                                                    onPressed: () {
-                                                      Navigator.of(context)
-                                                          .pushNamedAndRemoveUntil(LoginScreen.routeName, (Route<dynamic> route) => false);
-                                                    },),
-                                                ),
-                                              ],
+                                            leading: CircleAvatar(
+                                              radius: 20,
+                                              child: Image.asset('assets/images/human.png'),
                                             ),
-                                          )
+                                            title: Text(
+                                              'Hi',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold, fontSize: 18),
+                                            ),
+                                            subtitle: Text(name),
+                                            trailing: Container(
+                                              width: 60,
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                children: [
+                                                  Expanded(
+                                                    child: IconButton(
+                                                      icon: Icon(Icons.history ,),
+                                                      onPressed: () {
+                                                        Navigator.pushNamed(context, HistoryScreen.routeName).then((value) =>     Provider.of<AppProvider>(context, listen:false).getDashBoardData(context));
+                                                      },),
+                                                  ),
+                                                  Expanded(
+                                                    child: IconButton(
+                                                      icon: Icon(Icons.logout),
+                                                      onPressed: () {
+                                                        Navigator.of(context)
+                                                            .pushNamedAndRemoveUntil(LoginScreen.routeName, (Route<dynamic> route) => false);
+                                                      },),
+                                                  ),
+                                                ],
+                                              ),
+                                            )
                                         ),
                                       ),
                                     ),
@@ -285,133 +288,149 @@ class _StateDashBoard extends State<DashBoard> {
                             ),
                           ),
                         ),
-                     Expanded(
-                    child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              height: double.infinity,
-                              decoration: BoxDecoration(
-                                  color: Colors.orangeAccent,
-                                  borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(20),
-                                      topRight: Radius.circular(20))),
-                              child: Padding(
-                                  padding: EdgeInsets.only(left: 10, right: 10 ),
-                                  child: GridView.count(
-                                      shrinkWrap: true,
-                                      scrollDirection: Axis.vertical,
-                                      physics: ScrollPhysics(),
-                                      crossAxisCount: 3,
-                                      children: List.generate(
-                                          model.dashBoardList.length, (index) {
-                                        return Padding(
-                                          padding: EdgeInsets.only( bottom: 10 , left: 6 , right: 6),
-                                          child: GestureDetector(
-                                            onTap: ()async{
-                                              if(model.dashBoardList[index].id == 1){
-                                                Navigator.pushNamed(context, AttendantScreen.routeName).then((value) =>     Provider.of<AppProvider>(context, listen:false).getDashBoardData(context));
-                                              }else if(model.dashBoardList[index].id == 2){
-                                                if(isAdmin){
-                                                  Navigator.pushNamed(context, SupervisorScreen.routeName).then((value) =>     Provider.of<AppProvider>(context, listen:false).getDashBoardData(context));
-                                                }else{
-                                                  showSnackBar(context);
-                                                }
-                                              }else if(model.dashBoardList[index].id == 3){
-                                                if(isAdmin){
-                                                  Navigator.pushNamed(context, RoomScreen.routeName).then((value) =>     Provider.of<AppProvider>(context, listen:false).getDashBoardData(context));
-                                                }else{
-                                                  showSnackBar(context);
-                                                }
+                        Expanded(
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: double.infinity,
+                            decoration: BoxDecoration(
+                                color: Colors.orangeAccent,
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(20),
+                                    topRight: Radius.circular(20))),
+                            child: Padding(
+                              padding: EdgeInsets.only(left: 10, right: 10 ),
+                              child: GridView.count(
+                                  childAspectRatio: orientation == Orientation.portrait ? 1.16 : 1,
+                                  crossAxisCount: MediaQuery.of(context).size.width <= 800.0 ? 3 :  5 ,
 
-                                              }
-                                              else if(model.dashBoardList[index].id == 10){
-                                                if(isAdmin){
-                                                  Navigator.pushNamed(context, SupervisorScreen.routeName).then((value) =>     Provider.of<AppProvider>(context, listen:false).getDashBoardData(context));
-                                                }else{
-                                                  showSnackBar(context);
-                                                }
+                                  // Create a grid with 2 columns. If you change the scrollDirection to
+                                  // horizontal, this would produce 2 rows.
+                                  crossAxisSpacing: 2.0,
+                                  shrinkWrap: true,
+                                  scrollDirection: Axis.vertical,
+                                  physics: ScrollPhysics(),
+                                  // crossAxisCount: 3,
+                                  children: List.generate(
+                                      model.dashBoardList.length, (index) {
+                                    return Padding(
+                                      padding: EdgeInsets.only( bottom: 10 , left: 6 , right: 6),
+                                      child: GestureDetector(
+                                        onTap: ()async{
+                                          if(model.dashBoardList[index].id == 1){
+                                            Navigator.pushNamed(context, AttendantScreen.routeName).then((value) =>     Provider.of<AppProvider>(context, listen:false).getDashBoardData(context));
+                                          }else if(model.dashBoardList[index].id == 2){
+                                            if(isAdmin){
+                                              Navigator.pushNamed(context, SupervisorScreen.routeName).then((value) =>     Provider.of<AppProvider>(context, listen:false).getDashBoardData(context));
+                                            }else{
+                                              showSnackBar(context);
+                                            }
+                                          }
+                                          else if(model.dashBoardList[index].id == 10){
+                                            if(isAdmin){
+                                              Navigator.pushNamed(context, SupervisorModScreen.routeName).then((value) =>     Provider.of<AppProvider>(context, listen:false).getDashBoardData(context));
+                                            }else{
+                                              showSnackBar(context);
+                                            }
 
-                                              }else if(model.dashBoardList[index].id == 4){
-                                                if(isAdmin){
-                                                  Navigator.pushNamed(context, MiniBarScreen.routeName).then((value) =>     Provider.of<AppProvider>(context, listen:false).getDashBoardData(context));
-                                                }else{
-                                                  showSnackBar(context);
-                                                }
-                                              }else if(model.dashBoardList[index].id == 5){
-                                                if(isAdmin ){
-                                                  Navigator.pushNamed(context, MiniBarCoScreen.routeName).then((value) =>     Provider.of<AppProvider>(context, listen:false).getDashBoardData(context));
-                                                }else{
-                                                  showSnackBar(context);
-                                                }
-                                              }else if(model.dashBoardList[index].id == 6){
-                                                if(isAdmin){
-                                                  Navigator.pushNamed(context, LaundryScreen.routeName).then((value) =>     Provider.of<AppProvider>(context, listen:false).getDashBoardData(context));
-                                                }else{
-                                                  showSnackBar(context);
-                                                }
-                                              }else if(model.dashBoardList[index].id == 7){
-                                                Navigator.pushNamed(context, LostAndFoundScreen.routeName).then((value) =>     Provider.of<AppProvider>(context, listen:false).getDashBoardData(context));
-                                              }else if(model.dashBoardList[index].id == 8){
-                                                Navigator.pushNamed(context, WoEntryScreen.routeName).then((value) =>     Provider.of<AppProvider>(context, listen:false).getDashBoardData(context));
-                                              }else if(model.dashBoardList[index].id == 9){
-                                                if(isAdmin){
-                                                  Navigator.pushNamed(context, ViewLogsScreen.routeName).then((value) =>     Provider.of<AppProvider>(context, listen:false).getDashBoardData(context));
-                                                }else{
-                                                  showSnackBar(context);
-                                                }
-                                              }
-                                            },
-                                            child: Container(
-                                              height: 30,
-                                              decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  borderRadius: BorderRadius.circular(15)),
-                                                child: Column(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: [
-                                                    if (model.dashBoardList[index].id == 1)...[
-                                                      FaIcon(FontAwesomeIcons.tasks),
-                                                    ] else if(model.dashBoardList[index].id == 2)...[
-                                                      FaIcon(FontAwesomeIcons.pencilSquare),
-                                                    ]
-                                                    else if(model.dashBoardList[index].id == 10)...[
-                                                        FaIcon(FontAwesomeIcons.pencilSquare),
-                                                      ]else if(model.dashBoardList[index].id == 3)...[
-                                                      FaIcon(FontAwesomeIcons.building),
-                                                    ]else if(model.dashBoardList[index].id == 4)...[
-                                                      FaIcon(FontAwesomeIcons.wineGlass),
-                                                    ]else if(model.dashBoardList[index].id == 5)...[
-                                                      FaIcon(FontAwesomeIcons.wineGlass),
-                                                    ]else if(model.dashBoardList[index].id == 6)...[
-                                                      Icon( Icons.local_laundry_service_outlined, ),
-                                                    ]else if(model.dashBoardList[index].id == 7)...[
-                                                      FaIcon(FontAwesomeIcons.folder),
-                                                    ]else if(model.dashBoardList[index].id == 8)...[
-                                                      FaIcon(FontAwesomeIcons.pencil),
-                                                    ]else if(model.dashBoardList[index].id == 9)...[
-                                                      FaIcon(FontAwesomeIcons.fileText),
-                                                    ],
-                                                    SizedBox(
-                                                      height: 6,
-                                                    ),
-                                                    Text(model.dashBoardList[index].name , style: TextStyle(fontWeight: FontWeight.bold ,),)
-                                                  ],
-                                                ),
+                                          }else if(model.dashBoardList[index].id == 3){
+                                            if(isAdmin){
+                                              Navigator.pushNamed(context, RoomScreen.routeName).then((value) =>     Provider.of<AppProvider>(context, listen:false).getDashBoardData(context));
+                                            }else{
+                                              showSnackBar(context);
+                                            }
+
+                                          }
+                                          else if(model.dashBoardList[index].id == 10){
+                                            if(isAdmin){
+                                              Navigator.pushNamed(context, SupervisorScreen.routeName).then((value) =>     Provider.of<AppProvider>(context, listen:false).getDashBoardData(context));
+                                            }else{
+                                              showSnackBar(context);
+                                            }
+
+                                          }else if(model.dashBoardList[index].id == 4){
+                                            if(isAdmin){
+                                              Navigator.pushNamed(context, MiniBarScreen.routeName).then((value) =>     Provider.of<AppProvider>(context, listen:false).getDashBoardData(context));
+                                            }else{
+                                              showSnackBar(context);
+                                            }
+                                          }else if(model.dashBoardList[index].id == 5){
+                                            if(isAdmin ){
+                                              Navigator.pushNamed(context, MiniBarCoScreen.routeName).then((value) =>     Provider.of<AppProvider>(context, listen:false).getDashBoardData(context));
+                                            }else{
+                                              showSnackBar(context);
+                                            }
+                                          }else if(model.dashBoardList[index].id == 6){
+                                            if(isAdmin){
+                                              Navigator.pushNamed(context, LaundryScreen.routeName).then((value) =>     Provider.of<AppProvider>(context, listen:false).getDashBoardData(context));
+                                            }else{
+                                              showSnackBar(context);
+                                            }
+                                          }else if(model.dashBoardList[index].id == 7){
+                                            Navigator.pushNamed(context, LostAndFoundScreen.routeName).then((value) =>     Provider.of<AppProvider>(context, listen:false).getDashBoardData(context));
+                                          }else if(model.dashBoardList[index].id == 8){
+                                            Navigator.pushNamed(context, WoEntryScreen.routeName).then((value) =>     Provider.of<AppProvider>(context, listen:false).getDashBoardData(context));
+                                          }else if(model.dashBoardList[index].id == 9){
+                                            if(isAdmin){
+                                              Navigator.pushNamed(context, ViewLogsScreen.routeName).then((value) =>     Provider.of<AppProvider>(context, listen:false).getDashBoardData(context));
+                                            }else{
+                                              showSnackBar(context);
+                                            }
+                                          }
+                                        },
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.circular(15)),
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              if (model.dashBoardList[index].id == 1)...[
+                                                FaIcon(FontAwesomeIcons.tasks),
+                                              ] else if(model.dashBoardList[index].id == 2)...[
+                                                FaIcon(FontAwesomeIcons.pencilSquare),
+                                              ]
+                                              else if(model.dashBoardList[index].id == 10)...[
+                                                  FaIcon(FontAwesomeIcons.pencilSquare),
+                                                ]else if(model.dashBoardList[index].id == 3)...[
+                                                  FaIcon(FontAwesomeIcons.building),
+                                                ]else if(model.dashBoardList[index].id == 4)...[
+                                                  FaIcon(FontAwesomeIcons.wineGlass),
+                                                ]else if(model.dashBoardList[index].id == 5)...[
+                                                  FaIcon(FontAwesomeIcons.wineGlass),
+                                                ]else if(model.dashBoardList[index].id == 6)...[
+                                                  Icon( Icons.local_laundry_service_outlined, ),
+                                                ]else if(model.dashBoardList[index].id == 7)...[
+                                                  FaIcon(FontAwesomeIcons.folder),
+                                                ]else if(model.dashBoardList[index].id == 8)...[
+                                                  FaIcon(FontAwesomeIcons.pencil),
+                                                ]else if(model.dashBoardList[index].id == 9)...[
+                                                  FaIcon(FontAwesomeIcons.fileText),
+                                                ],
+                                              SizedBox(
+                                                height: 6,
                                               ),
+                                              Text(model.dashBoardList[index].name , style: TextStyle(fontWeight: FontWeight.bold ,),)
+                                            ],
                                           ),
+                                        ),
+                                      ),
 
 
-                                        );
-                                      }
-                                      )
-                                  ),
-                                ),
-
+                                    );
+                                  }
+                                  )
+                              ),
                             ),
-                  ),
 
-                  ],
-                ),
-              ),
+                          ),
+                        ),
+
+                      ],
+                    ),
+                  ),
+                );
+              },
+
             );
           },
 

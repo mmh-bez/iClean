@@ -23,11 +23,14 @@ import 'package:i_clean/models/room_button.dart';
 import 'package:i_clean/models/supervisor/super_visor_checklist_response.dart';
 import 'package:i_clean/models/supervisor/super_visor_grid_response.dart';
 import 'package:i_clean/models/supervisor/super_visor_status_response.dart';
+import 'package:i_clean/models/supervisormode/supervisor_mode_data.dart';
 import 'package:i_clean/models/view_logs_response.dart';
 import 'package:i_clean/models/woentry/wo_entry_model.dart';
 import 'package:i_clean/models/task_model.dart';
 import 'package:i_clean/service/api_util.dart';
 import 'package:i_clean/utils/const.dart';
+
+import '../models/supervisormode/supervisor_mode_grid_data.dart';
 
 class ApiService{
   static Response response;
@@ -362,7 +365,44 @@ class ApiService{
     return response.statusCode;
   }
 
+  static Future<SupervisorModeData> getSupervisorModData(BuildContext context) async{
+    var _api = await ApiUtil.connectWithAuth(context);
+    response = await _api.get('/services/app/SupervisorMode/GetSupervisorModeViewData'
+    );
+    return supervisorModeDataFromMap(response.data);
 
+  }
+
+  static Future<SupervisorModeGridData> getSupervisorModeGrid(BuildContext context, String selectedRoom, String floor,String maidKey, String selectedMaidStatus, int currentPage) async{
+    var _api = await ApiUtil.connectWithAuth(context);
+    response = await _api.get('/services/app/SupervisorMode/GetBindGridPagin?'
+        'SelectedRoomStatus=$selectedRoom&FloorNo=$floor&MaidKey=$maidKey&SelectedMaidStatus=$selectedMaidStatus&currentPage=$currentPage&pageSize=10'
+    );
+    return supervisorModeGridDataFromMap(response.data);
+
+  }
+
+  static Future<BaseResponseToken> confirmCleanMode(BuildContext context, String room, String text , String phy , String roomKey) async {
+    var _api = await ApiUtil.connectWithAuth(context);
+    response = await _api.post('/services/app/PopupUpdateMaidStatus/CleanSave' , data: {
+      "strMode": "supclean",
+      "strRoomNo": room,
+      "note": text,
+      "roomKey": roomKey
+    });
+    return baseResponseTokenFromJson(response.data);
+  }
+
+  static Future<BaseResponseToken> confirmDirtyMode(BuildContext context, String room, String text, String phy , String roomKey) async{
+    var _api = await ApiUtil.connectWithAuth(context);
+    response = await _api.post('/services/app/PopupUpdateMaidStatus/DirtySave' , data: {
+      "strMode": "supdirty",
+      "strRoomNo": room,
+      "note": text,
+      "roomKey": roomKey
+    });
+    return baseResponseTokenFromJson(response.data);
+  }
 
 
 }

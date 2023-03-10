@@ -287,7 +287,7 @@ class _SupervisorScreenState extends State<SupervisorScreen> {
                                                       showAlertDialogTwo(
                                                           context,
                                                           'Confirm',
-                                                          'Confirm update "Do Not Distrub status for Room#${model.supervisorItemList[index].unit}',
+                                                          'Confirm update "Do Not disturb status for Room#${model.supervisorItemList[index].unit}',
                                                           () {
                                                         Navigator.pop(context);
                                                         Provider.of<AppProvider>(
@@ -410,7 +410,9 @@ class _SupervisorScreenState extends State<SupervisorScreen> {
         builder: (context) {
           return Consumer<AppProvider>(
             builder: (context, model, _) {
-              return model.state == ViewState.Busy ? Center(child: CircularProgressIndicator(),) :ListView.builder(
+              return model.state == ViewState.Busy ? Center(child: CircularProgressIndicator(),) :
+              model.supervisorHistoryList.isEmpty ?
+              Center(child: Text('There is no history.'),) :ListView.builder(
                   itemCount: model.supervisorHistoryList.length,
                   itemBuilder: (context, index) {
                     return Padding(
@@ -442,81 +444,82 @@ class _SupervisorScreenState extends State<SupervisorScreen> {
             heightFactor: 1,
             child: Consumer<AppProvider>(
               builder: (context , model , _){
-                return   Container(
-                  child: Column(
+                return  Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      Container(
-                        height: 550,
-                        child: model.state == ViewState.Busy ? Center(child: CircularProgressIndicator(),) : ListView.builder(
-                            itemCount:
-                            model.supCheckItemList.length,
-                            itemBuilder: (context, index) {
-                              return Padding(
-                                  padding:
-                                  EdgeInsets.only(left: 4, right: 4, top: 2),
-                                  child: Container(
-                                    height: 50,
-                                    child: Card(
-                                      elevation: 2,
-                                      child: Row(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Container(
-                                            width: 400,
-                                            child: Padding(
-                                                padding: EdgeInsets.all(6),
-                                                child: Text(model
-                                                    .supCheckItemList[index].combined)),
-                                          ),
-                                          Container(
-                                            child: Padding(
-                                                padding: EdgeInsets.all(6),
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                                  crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                                  children: [
-                                                    Center(
-                                                        child: Text(model
-                                                            .supCheckItemList[index].quantity)),
-                                                  ],
-                                                )),
-                                          ),
-                                      Checkbox(
-                                          value: model.supCheckItemList[index].checked == 0 ? false : true,
-                                          onChanged: (value){
-                                            model.updateCheckbox( value , index);
+                      model.state == ViewState.Busy ? Expanded(child: Center(child: CircularProgressIndicator(),)) :
+                        model.supCheckItemList.isEmpty ? Center(child: Text('No records to display.'),):
+                        Expanded(
+                          child: ListView.builder(itemCount:
+                              model.supCheckItemList.length,
+                              itemBuilder: (context, index) {
+                                return Padding(
+                                    padding:
+                                    EdgeInsets.only(left: 4, right: 4, top: 2),
+                                    child: Container(
+                                      height: 50,
+                                      child: Card(
+                                        elevation: 2,
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Container(
 
-
-                                          }
+                                              width: 200,
+                                              child: Padding(
+                                                  padding: EdgeInsets.all(6),
+                                                  child: Text(model
+                                                      .supCheckItemList[index].combined)),
+                                            ),
+                                            Container(
+                                              child: Padding(
+                                                  padding: EdgeInsets.all(6),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                    crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                    children: [
+                                                      Center(
+                                                          child: Text(model
+                                                              .supCheckItemList[index].quantity)),
+                                                    ],
+                                                  )),
+                                            ),
+                                        Checkbox(
+                                            value: model.supCheckItemList[index].checked == 0 ? false : true,
+                                            onChanged: (value){
+                                              model.updateCheckbox( value , index);
+                                            }
+                                        ),
+                                          ],
+                                        ),
                                       ),
-                                        ],
-                                      ),
-                                    ),
-                                  ));
-                            }),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ElevatedButton(onPressed: () {
-                            model.saveCheckList(context);
-                          }, child: Text('OK')),
-                          SizedBox(
-                            width: 2,
-                          ),
-                          ElevatedButton(onPressed: () {
-                            Navigator.pop(context);
-                          }, child: Text('CANCEL')),
-                        ],
+                                    ));
+                              }),
+                        ),
+                      model.supCheckItemList.isEmpty ? Container():
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            ElevatedButton(onPressed: () {
+                              model.saveCheckList(context);
+                            }, child: Text('OK')),
+                            SizedBox(
+                              width: 2,
+                            ),
+                            ElevatedButton(onPressed: () {
+                              Navigator.pop(context);
+                            }, child: Text('CANCEL')),
+                          ],
+                        ),
                       )
                     ],
-                  ),
+
                 );
               },
 

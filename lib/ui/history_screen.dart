@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:i_clean/providers/app_provider.dart';
+import 'package:i_clean/providers/view_state.dart';
 import 'package:provider/provider.dart';
 
 class HistoryScreen extends StatefulWidget{
@@ -30,8 +31,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
       ),
       body: Consumer<AppProvider>(
         builder: (context , model , _){
-          return Container(
-            child: ListView.builder(
+          return model.state == ViewState.Busy ? Center(child: CircularProgressIndicator(),): Container(
+            child: model.historyList.length == 0 ? Center(child: Text('No record to display.'),):
+            ListView.builder(
               itemCount: model.historyList.length,
                 itemBuilder: (context , index){
                   return Padding(

@@ -36,16 +36,21 @@ class _MinibarCoItemScreenState extends State<MinibarCoItemScreen> {
     return Consumer<AppProvider>(
         builder: (context , model , _){
           return Scaffold(
-              floatingActionButton: FloatingActionButton(
-                elevation: 4,
-                child: Icon(Icons.add_box),
-                onPressed: (){
-                  _showModelBottomSheet(model.minibarCoItemList.first , context);
-                },
-              ),
+
               appBar: AppBar(
                 centerTitle: true,
                 title: Text('Minibar/CO Item'),
+                actions: [
+                  Padding(
+                    padding: EdgeInsets.only(right: 12 , top: 4),
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.add_box,
+                      ),
+                      onPressed: () => _showModelBottomSheet(model.minibarCoItemList.first , context)
+                    ),
+                  )
+                ],
               ),
      body: model.state == ViewState.Busy ? Center(child: CircularProgressIndicator()):
           model.state == ViewState.Error ? Center(child: Text('No Data')) :
@@ -67,6 +72,7 @@ class _MinibarCoItemScreenState extends State<MinibarCoItemScreen> {
                             padding: EdgeInsets.only(left: 8 , right: 8, top: 6 , bottom: 4),
                             child: Container(
                               child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: [
                                   Container(
                                     width: double.infinity,
@@ -95,7 +101,7 @@ class _MinibarCoItemScreenState extends State<MinibarCoItemScreen> {
                                   ),
                                   Container(
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
                                         Container(
                                           width: 105,
@@ -106,7 +112,6 @@ class _MinibarCoItemScreenState extends State<MinibarCoItemScreen> {
                                           child: Text(':'),
                                         ),
                                         Container(
-                                            width: 200,
                                             child: Text(model.minibarCoItemList.first.guestName, style: TextStyle(fontSize: 16),)
                                         ),
                                       ],
@@ -114,7 +119,7 @@ class _MinibarCoItemScreenState extends State<MinibarCoItemScreen> {
                                   ),
                                   Container(
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
                                         Container(
                                           width: 100,
@@ -124,8 +129,8 @@ class _MinibarCoItemScreenState extends State<MinibarCoItemScreen> {
                                           width: 20,
                                           child: Image.asset('assets/images/in.png'),
                                         ),
+                                        SizedBox(width: 6,),
                                         Container(
-                                          width: 200,
                                           child: Text(formatDate(model.minibarCoItemList.first.checkInDate), style: TextStyle(fontSize: 16),),
                                         ),
                                       ],
@@ -133,7 +138,7 @@ class _MinibarCoItemScreenState extends State<MinibarCoItemScreen> {
                                   ),
                                   Container(
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
                                         Container(
                                           width: 100,
@@ -143,8 +148,9 @@ class _MinibarCoItemScreenState extends State<MinibarCoItemScreen> {
                                           width: 20,
                                           child: Image.asset('assets/images/out.png'),
                                         ),
+                                        SizedBox(width: 6,),
                                         Container(
-                                          width: 200,
+
                                           child: Text(formatDate(model.minibarCoItemList.first.checkOutDate) , style: TextStyle(fontSize: 16),),
                                         ),
                                       ],
@@ -268,58 +274,95 @@ class _MinibarCoItemScreenState extends State<MinibarCoItemScreen> {
 
   }
 
-  void _showModelBottomSheet(MinibarItemModel model , BuildContext context) async {
-
+  void _showModelBottomSheet(MinibarItemModel minibar , BuildContext context) async {
+    Provider.of<AppProvider>(context , listen: false).updateMinibarItem(minibar.minibarItems );
     showModalBottomSheet<MinibarItem>(
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
       context: context,
       isScrollControlled: true,
       builder: (BuildContext context) {
-        return FractionallySizedBox(
-          heightFactor: 0.9,
-          child:  Container(
-            height: double.infinity,
-            padding: EdgeInsets.only(top: 16, left: 16, right: 16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Text('MiniBar Items'),
+        return Consumer<AppProvider>(
+          builder: (context , model , _){
+            return FractionallySizedBox(
+              heightFactor: 0.9,
+              child:  Container(
+                height: double.infinity,
+                padding: EdgeInsets.only(top: 16, left: 16, right: 16),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text('MiniBar/CO Items'),
+                    Expanded(
+                      child: ListView.separated(
+                          separatorBuilder: (context, index) => Divider(
+                            color: Colors.black,
+                          ),
+                          itemCount: model.tempItemSelectedList.length,
+                          itemBuilder: (context , index){
+                            return Container(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text('${index+1}.   '+model.tempItemSelectedList[index].description),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        IconButton(
+                                          icon: Icon(Icons.indeterminate_check_box_outlined),
+                                          onPressed: (){
+                                            Provider.of<AppProvider>(context , listen: false).updateItemQty(model.tempItemSelectedList[index] , index , 'decrease');
 
-                Expanded(
-                  child: ListView.separated(
-                      separatorBuilder: (context, index) => Divider(
-                        color: Colors.black,
-                      ),
-                      itemCount: model.minibarItems.length,
-                      itemBuilder: (context , index){
-                        return GestureDetector(
-                          onTap: (){
-                            showCountDialog(model.minibarItems[index] , index+1);
-                          },
-                          child: Container(
-                            child: Text('${index+1}.   '+model.minibarItems[index].description),
-                          ),
-                        );
-                      }),
-                ),
-                TextButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.blue,
-                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),),
-                    onPressed: (){
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => AddSelectedItemScreen(roomNo: widget.roomNo, type: 'MinibarRoom',voucherNo: null,
-                            reservationKey: model.reservationKey, roomKey: model.roomKey,
-                          ),
+
+                                          },
+                                        ) ,
+                                        Text('${context.watch<AppProvider>().tempItemSelectedList[index].qty}'),
+                                        IconButton(
+                                          icon: Icon(Icons.add_box_outlined),
+                                          onPressed: (){
+                                            // Provider.of<AppProvider>(context , listen: false).increase();
+                                            Provider.of<AppProvider>(context , listen: false).updateItemQty(model.tempItemSelectedList[index] , index , 'increase');
+                                          },
+                                        ) ,
+
+                                      ],
+                                    ),
+                                  ],
+                                )
+
+
+
+                            );
+                          }),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextButton(
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.green,
+                              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),),
+                            onPressed: (){
+                              Provider.of<AppProvider>(context , listen: false).postSelectedItems(context ,'MinibarRoom' ,widget.roomNo , minibar.roomKey , minibar.reservationKey  , null);
+                            }, child: Text('Post Items' , style: TextStyle(color: Colors.white),)),
+                        SizedBox(
+                          width: 12,
                         ),
-                      );
-                    }, child: Text('View Selected Item' , style: TextStyle(color: Colors.white),))
-              ],
-            ),
-          ),
+                        TextButton(
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.blue,
+                              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),),
+                            onPressed: (){
+                              Navigator.pop(context);
+
+                            }, child: Text('Cancel' , style: TextStyle(color: Colors.white),))
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            );
+          },
         );
       },
     );
