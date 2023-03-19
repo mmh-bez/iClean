@@ -404,28 +404,48 @@ class _SupervisorScreenState extends State<SupervisorScreen> {
   void showHistorySheet(
       AppProvider mainModel, BuildContext context, String roomKey) {
     Provider.of<AppProvider>(context, listen: false)
-        .getHistorySupervisor(context, roomKey);
+        .getHistorySupervisor(context, roomKey , 5);
     showModalBottomSheet(
         context: context,
+        shape: const RoundedRectangleBorder( // <-- SEE HERE
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(16.0),
+          ),
+        ),
         builder: (context) {
           return Consumer<AppProvider>(
             builder: (context, model, _) {
               return model.state == ViewState.Busy ? Center(child: CircularProgressIndicator(),) :
               model.supervisorHistoryList.isEmpty ?
-              Center(child: Text('There is no history.'),) :ListView.builder(
-                  itemCount: model.supervisorHistoryList.length,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: EdgeInsets.only(left: 4, right: 4, top: 2),
-                      child: Card(
-                        elevation: 2,
-                        child: Padding(
-                            padding: EdgeInsets.all(6),
-                            child: Text(model.supervisorHistoryList[index]
-                                .getDateTimeToDisplay)),
-                      ),
-                    );
-                  });
+              Center(child: Text('There is no history.'),) :
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: ListView.builder(
+                        itemCount: model.supervisorHistoryList.length,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: EdgeInsets.only(left: 4, right: 4, top: 12),
+                            child: Card(
+                              elevation: 2,
+                              child: Padding(
+                                  padding: EdgeInsets.all(6),
+                                  child: Text(model.supervisorHistoryList[index]
+                                      .getDateTimeToDisplay)),
+                            ),
+                          );
+                        }),
+                  ),
+
+                  model.supervisorHistoryList.length < 5 ? Container():
+                  ElevatedButton(onPressed: () {
+                    Provider.of<AppProvider>(context, listen: false)
+                        .getHistorySupervisor(context, roomKey , 100);
+                  }, child: Text('Show More')),
+
+                ]
+              );
             },
           );
         });

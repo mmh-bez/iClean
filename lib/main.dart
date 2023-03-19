@@ -41,10 +41,18 @@ void main() async{
   await NotificationHelper.initialize(flutterLocalNotificationsPlugin);
   await Firebase.initializeApp(
   );
+  final prefs = await SharedPreferences.getInstance();
+  bool isFirst = prefs.getBool('isFirst');
   var brightness = WidgetsBinding.instance.platformDispatcher.platformBrightness;
    isDarkModeEnabled = brightness == Brightness.dark;
-  final prefs = await SharedPreferences.getInstance();
-  await prefs.clear();
+  final savedThemeMode = await AdaptiveTheme.getThemeMode();
+  if(isFirst != null && isFirst == true){
+    if(savedThemeMode == AdaptiveThemeMode.light){
+      isDarkModeEnabled = false;
+    }else{
+      isDarkModeEnabled = true;
+    }
+  }
   await FirebaseMessaging.instance.getInitialMessage();
   runApp( MyApp());
 }

@@ -4,8 +4,10 @@ import 'package:intl/intl.dart';
 
 //const baseApi = "https://test.bezcloud.app/api";
 //final hcoApi = "https://iclean.bezcloud.app/api";
+//final hgcApi = 'https://test.bezcloud.app/api';
 final hcoApi = "https://icleanhco.ghihotels.com/api";
-final hgcApi = 'https://test.bezcloud.app/api';
+final hgcApi = 'https://icleanhgc.ghihotels.com/api';
+
 String baseApi;
 GlobalKey<NavigatorState> nav = GlobalKey<NavigatorState>();
 String token ;

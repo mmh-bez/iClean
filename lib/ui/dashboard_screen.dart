@@ -6,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:i_clean/providers/app_provider.dart';
 import 'package:i_clean/ui/attendant_screen.dart';
 import 'package:i_clean/ui/history_screen.dart';
+import 'package:i_clean/ui/intro_screen.dart';
 import 'package:i_clean/ui/laundry/laundry_screen.dart';
 import 'package:i_clean/ui/login_screen.dart';
 import 'package:i_clean/ui/lostandfound/lost_and_found_screen.dart';
@@ -19,6 +20,7 @@ import 'package:i_clean/ui/wo_entry_screen.dart';
 import 'package:i_clean/utils/const.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../utils/screen_size.dart';
 
@@ -109,9 +111,12 @@ class _StateDashBoardScreen extends State<DashBoardScreen> {
                                               children: [
                                                 DayNightSwitcher(
                                                   isDarkModeEnabled: isDarkModeEnabled,
-                                                  onStateChanged: (enable) {
+                                                  onStateChanged: (enable) async{
+                                                    final prefs = await SharedPreferences.getInstance();
                                                     setState(() {
+
                                                       isDarkModeEnabled = enable;
+                                                       prefs.setBool('isFirst', true);
                                                       if(isDarkModeEnabled == false){
                                                         AdaptiveTheme.of(context).setLight();
                                                       }else{
@@ -132,7 +137,7 @@ class _StateDashBoardScreen extends State<DashBoardScreen> {
                                                     icon: Icon(Icons.logout),
                                                     onPressed: () {
                                                       Navigator.of(context)
-                                                          .pushNamedAndRemoveUntil(LoginScreen.routeName, (Route<dynamic> route) => false);
+                                                          .pushNamedAndRemoveUntil(IntroScreen.routeName, (Route<dynamic> route) => false);
                                                     },),
                                                 ),
                                               ],

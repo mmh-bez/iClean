@@ -601,7 +601,6 @@ class AppProvider extends BaseProvider{
     }else{
       Navigator.pop(context);
       showAlertDialog(context, 'Error', "Please try again", (){
-        Navigator.pop(context);
       });
     }
 
@@ -841,9 +840,9 @@ class AppProvider extends BaseProvider{
   }
 
   List<HistoryLogOfRoomItem> supervisorHistoryList = [];
-  void getHistorySupervisor(BuildContext context, String roomKey) async{
+  void getHistorySupervisor(BuildContext context, String roomKey , int pageSize) async{
     setState(ViewState.Busy);
-    HistoryLogOfRoom _res = await ApiService.getSupervisorHistory(context, roomKey);
+    HistoryLogOfRoom _res = await ApiService.getSupervisorHistory(context, roomKey , pageSize);
     if(_res.success){
       setState(ViewState.Idle);
       supervisorHistoryList = _res.result.items;
@@ -1051,14 +1050,13 @@ class AppProvider extends BaseProvider{
     BaseResponseToken _base = await ApiService.confirmCleanMode(context , room, text , phy , roomKey);
     if(_base.success){
       Navigator.pop(context);
-      //Navigator.pop(context);
+      Navigator.pop(context);
       for(var mes in _base.result){
         await ApiService.sendNotification(context, "Clean", mes.message, mes.to);
       }
-
       getSupervisorModeGrid(context, superVisorSelectedRoom, superFloor,maidKey , superSelectedStaff , 1);
       showAlertDialog(context, "Success", "Record have been saved", (){
-        Navigator.pop(context);
+        //Navigator.pop(context);
       });
     }else{
       Navigator.pop(context);

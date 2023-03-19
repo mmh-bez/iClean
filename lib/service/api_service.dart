@@ -293,9 +293,9 @@ class ApiService{
     return supervisorGridResponseFromJson(response.data);
   }
 
-  static Future<HistoryLogOfRoom> getSupervisorHistory(BuildContext context , String roomKey)async {
+  static Future<HistoryLogOfRoom> getSupervisorHistory(BuildContext context , String roomKey , int pageSize)async {
     var _api = await ApiUtil.connectWithAuth(context);
-    response = await _api.get('/services/app/MyTask/GetShowLog?roomkey=$roomKey');
+    response = await _api.get('/services/app/MyTask/GetShowLog?roomkey=$roomKey&pageSize=$pageSize');
     return historyLogOfRoomFromJson(response.data);
 
   }
