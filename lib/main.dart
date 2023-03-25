@@ -31,16 +31,23 @@ import 'package:i_clean/ui/view_logs_screen.dart';
 import 'package:i_clean/ui/wo_entry_screen.dart';
 import 'package:i_clean/utils/const.dart';
 import 'package:provider/provider.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+Future<void> _fcmBackgroundHandler(RemoteMessage message) async{
+  print('Handling a background message ${message.notification}');
+  print('Notification Message: ${message.notification.title}');
+
+}
 void main() async{
 
   WidgetsFlutterBinding.ensureInitialized();
-  //WidgetsBinding.instance.handlePlatformBrightnessChanged();
+  await Firebase.initializeApp();
   await NotificationHelper.initialize(flutterLocalNotificationsPlugin);
-  await Firebase.initializeApp(
-  );
+  await FirebaseMessaging.instance.getInitialMessage();
+  FirebaseMessaging.onBackgroundMessage(_fcmBackgroundHandler);
   final prefs = await SharedPreferences.getInstance();
   bool isFirst = prefs.getBool('isFirst');
   var brightness = WidgetsBinding.instance.platformDispatcher.platformBrightness;
@@ -53,7 +60,15 @@ void main() async{
       isDarkModeEnabled = true;
     }
   }
-  await FirebaseMessaging.instance.getInitialMessage();
+  await SentryFlutter.init(
+          (options) {
+        options.dsn = 'https://d5c3c278a52645f2a699b70254f64e1c@o4504891509374976.ingest.sentry.io/4504891575500800';
+        // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+        // We recommend adjusting this value in production.
+        options.tracesSampleRate = 1.0;
+      },
+  );
+
   runApp( MyApp());
 }
 

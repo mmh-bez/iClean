@@ -359,7 +359,7 @@ class ApiService{
           "notification": {
           "title": title,
           "body": body
-        }
+        },
     });
 
     return response.statusCode;

@@ -178,7 +178,7 @@ class _RoomScreenState extends State<RoomScreen> {
             :GridView.builder(
             gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                 maxCrossAxisExtent: 300,
-                childAspectRatio:1.4,
+                childAspectRatio:1.3,
                 crossAxisSpacing: 1,
                 mainAxisSpacing: 4),
             itemCount: model.roomGridList.length,
@@ -202,7 +202,10 @@ class _RoomScreenState extends State<RoomScreen> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(model.roomGridList[index].unit),
+                                  Text(model.roomGridList[index].unit ,  style: TextStyle(fontWeight: FontWeight.bold , fontSize: 18),),
+                                  SizedBox(
+                                    height: 4,
+                                  ),
                                   Text( model.roomGridList[index].roomType),
                                   Text(model.roomGridList[index].roomStatus),
                                   Text( model.roomGridList[index].maidStatus),

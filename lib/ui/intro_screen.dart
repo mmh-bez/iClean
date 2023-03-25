@@ -32,6 +32,7 @@ class IntroScreen extends StatelessWidget{
                 GestureDetector(
                   onTap: (){
                     baseApi = hcoApi;
+                  //  throw Exception('throw first error');
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) =>  LoginScreen(type: "hco")),

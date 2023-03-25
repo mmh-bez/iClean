@@ -37,7 +37,6 @@ class _AttendantScreenState extends State<AttendantScreen> {
   @override
   void initState() {
     // TODO: implement initState
-    Provider.of<AppProvider>(context , listen: false).getAttendantData(context);
     Provider.of<AppProvider>(context , listen: false).getAttendantList(context , "0" , "ALL" , "ALL" , 'All');
     super.initState();
   }
@@ -231,7 +230,7 @@ class _AttendantScreenState extends State<AttendantScreen> {
                                mainAxisAlignment: MainAxisAlignment.start,
                                crossAxisAlignment: CrossAxisAlignment.start,
                                children: [
-                                 Text('Room# '+model.attendantList[index].unit),
+                                 Text('Room# '+model.attendantList[index].unit , style: TextStyle(fontWeight: FontWeight.bold , fontSize: 18),),
                                   Text('Type :'+ model.attendantList[index].roomType),
                                  Text('LinenChange : '+model.attendantList[index].linenChangeDes),
                                  Text('Connect Room :'+ model.attendantList[index].interconnectRoom),
@@ -373,7 +372,7 @@ class _AttendantScreenState extends State<AttendantScreen> {
               showAlertDialogTwo(context,'Are you going to start houskeeping in Room'
                   '${model.attendantList[index].unit}', model.attendantList[index].hmmNotes, (){
                 Provider.of<AppProvider>(context ,listen: false).clickStart(context , model.attendantList[index].unit , model.attendantList[index].roomKey);
-              Navigator.pop(context);
+            //  Navigator.pop(context);
               });
 
             },

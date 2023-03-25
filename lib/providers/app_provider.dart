@@ -190,11 +190,12 @@ class AppProvider extends BaseProvider{
     currentMaidStatus = maidStatus;
     currentGuestStatus = guestStatus;
     currentRoomStatus = roomStatus;
-
+    getAttendantData(context);
     AttendantModel _attendantModel = await ApiService.getAttendantList(
         context, floorName, maidStatus, guestStatus, roomStatus);
     if(_attendantModel.success == true) {
       setState(ViewState.Idle);
+
       attendantList = _attendantModel.result.items;
 
     }
@@ -840,12 +841,14 @@ class AppProvider extends BaseProvider{
   }
 
   List<HistoryLogOfRoomItem> supervisorHistoryList = [];
-  void getHistorySupervisor(BuildContext context, String roomKey , int pageSize) async{
+  Future<void> getHistorySupervisor(BuildContext context, String roomKey , int pageSize) async{
+    supervisorHistoryList.clear();
     setState(ViewState.Busy);
     HistoryLogOfRoom _res = await ApiService.getSupervisorHistory(context, roomKey , pageSize);
     if(_res.success){
-      setState(ViewState.Idle);
       supervisorHistoryList = _res.result.items;
+      setState(ViewState.Idle);
+    //  return false;
     }
     notifyListeners();
 

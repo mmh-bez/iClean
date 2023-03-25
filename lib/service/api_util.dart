@@ -20,8 +20,8 @@ class ApiUtil {
 
     // Set default configs
     apiWithNoAuth.options.baseUrl = baseApi;
-    apiWithNoAuth.options.connectTimeout = Duration(seconds: 10) ; //20s
-    apiWithNoAuth.options.receiveTimeout = Duration(seconds: 10) ; //10s
+    apiWithNoAuth.options.connectTimeout = Duration(seconds: 20) ; //20s
+    apiWithNoAuth.options.receiveTimeout = Duration(seconds: 20) ; //10s
 
     apiWithNoAuth.interceptors.add(LogInterceptor(requestBody: true));
     apiWithNoAuth.interceptors.add(LogInterceptor(responseBody: true));
@@ -59,8 +59,8 @@ class ApiUtil {
     // Read value
     // Set default configs
     apiWithAuth.options.baseUrl = baseApi;
-    apiWithAuth.options.connectTimeout = Duration(seconds: 10); //20s
-    apiWithAuth.options.receiveTimeout = Duration(seconds: 10); //10s
+    apiWithAuth.options.connectTimeout = Duration(seconds: 20); //20s
+    apiWithAuth.options.receiveTimeout = Duration(seconds: 20); //10s
 
     apiWithAuth.interceptors.add(LogInterceptor(requestBody: true));
     apiWithAuth.interceptors.add(LogInterceptor(responseBody: true));
